@@ -10,7 +10,19 @@ EditorBuildSettings:
     guid: 7d58feecb39c6a2429d66f9e84f779a6
   - enabled: 1
     path: Assets/Scenes/Home.unity
-    guid: 99bae860e4c6baf4ab6b4ca2d15d4c85
+    guid: 2e16504c96b455148adfb84c0718e933
+  - enabled: 1
+    path: Assets/Scenes/My Pets.unity
+    guid: 8ca2d7c275431904e84c03837f963401
+  - enabled: 1
+    path: Assets/Scenes/Inventory.unity
+    guid: c2157f3a73b698247899fdae3b44c9b6
+  - enabled: 1
+    path: Assets/Scenes/Shop.unity
+    guid: c073319c4877f044c80d3304e4480c4c
+  - enabled: 1
+    path: Assets/Scenes/My Collection.unity
+    guid: 33476594ad1873d42b6d141ecc3210fa
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

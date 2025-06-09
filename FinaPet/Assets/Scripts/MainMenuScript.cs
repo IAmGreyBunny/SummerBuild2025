@@ -35,7 +35,14 @@ public class MainMenuScript : MonoBehaviour
     {
         Debug.Log("Load Diary Scene...");
         SceneManager.LoadScene("Diary");
-        Debug.Log("Diary");
+        Debug.Log("My Diary Scene Loaded");
+    }
+
+    public void LoadMyPetsScene()
+    {
+        Debug.Log("Load My Pets Scene...");
+        SceneManager.LoadScene("My Pets");
+        Debug.Log("My Pets Scene Loaded");
     }
 
     public void QuitGame()
