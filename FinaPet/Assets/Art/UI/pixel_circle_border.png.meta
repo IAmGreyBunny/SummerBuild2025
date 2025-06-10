@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2b6dc293c41a75145b95e13cbaa56310
+guid: 6f24772668faa4447992eb772170c263
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1672065278671013532
-    second: girlhead_0
+      213: 198610345067750395
+    second: 9sprite_8bit_circle_outline_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,27 +96,40 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: girlhead_0
+      name: pixel_circle_border
       rect:
         serializedVersion: 2
-        x: 799
-        y: 2879
-        width: 922
-        height: 762
+        x: 0
+        y: 0
+        width: 512
+        height: 512
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 128, y: 128, z: 128, w: 128}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c964370138e543710800000000000000
-      internalID: 1672065278671013532
+      spriteID: bf32b7a7e0b91c200800000000000000
+      internalID: 198610345067750395
       vertices: []
       indices: 
       edges: []
@@ -125,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 9529fbe7531b7be44991da9f93a1f958
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      girlhead_0: 1672065278671013532
+      pixel_circle_border: 198610345067750395
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

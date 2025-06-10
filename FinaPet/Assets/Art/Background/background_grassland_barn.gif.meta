@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2bc1befcc149c734d8476a184527868d
+guid: 9fefec77608762a42b219c46345915d9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8771350949733757393
-    second: gurl_0
+      213: -6091969766936444338
+    second: gio-rosales-sample5_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,27 +96,40 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gurl_0
+      name: background_grassland_barn
       rect:
         serializedVersion: 2
-        x: 1319
-        y: 1279
-        width: 922
-        height: 1482
+        x: 0
+        y: 0
+        width: 800
+        height: 450
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f2e85d8a8c6e54680800000000000000
-      internalID: -8771350949733757393
+      spriteID: e42855b06c9f47ba0800000000000000
+      internalID: -6091969766936444338
       vertices: []
       indices: 
       edges: []
@@ -125,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: fdc668be5944f4e4ea80c510cebc9951
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      gurl_0: -8771350949733757393
+      background_grassland_barn: -6091969766936444338
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
