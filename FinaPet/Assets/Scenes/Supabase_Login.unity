@@ -1000,7 +1000,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EmailInput: {fileID: 1993803945}
   PasswordInput: {fileID: 380897047}
-  ErrorText: {fileID: 1994407093}
+  ErrorText: {fileID: 687703547}
   SupabaseManager: {fileID: 1561616548}
 --- !u!4 &649618089
 Transform:
@@ -1641,7 +1641,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SupabaseManager: {fileID: 1561616548}
-  LoggedInEmailAddress: {fileID: 687703547}
+  LoggedInEmailAddress: {fileID: 1994407093}
 --- !u!114 &1561616548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1655,7 +1655,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SessionListener: {fileID: 1561616547}
-  SupabaseSettings: {fileID: 11400000, guid: 90b7ba022dfd53d46b6ca0f93b4c7d57, type: 2}
+  SupabaseSettings: {fileID: 11400000, guid: e54e5a1ddbd19a243ba1837a41b60b29, type: 2}
   ErrorText: {fileID: 1994407093}
 --- !u!4 &1561616549
 Transform:
@@ -2222,7 +2222,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -208.6}
+  m_AnchoredPosition: {x: 0, y: -257.6}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1993803945
