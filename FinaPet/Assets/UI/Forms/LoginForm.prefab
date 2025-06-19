@@ -8,9 +8,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 920191446128931054, guid: 5289f236cdd21b9448570d2fe1e696c5, type: 3}
+      propertyPath: m_text
+      value: Username
+      objectReference: {fileID: 0}
     - target: {fileID: 1466118598071798079, guid: 5289f236cdd21b9448570d2fe1e696c5, type: 3}
       propertyPath: m_Name
       value: LoginForm
+      objectReference: {fileID: 0}
+    - target: {fileID: 1925802635074572925, guid: 5289f236cdd21b9448570d2fe1e696c5, type: 3}
+      propertyPath: m_Name
+      value: UsernameTextInput
       objectReference: {fileID: 0}
     - target: {fileID: 2887198841236687228, guid: 5289f236cdd21b9448570d2fe1e696c5, type: 3}
       propertyPath: m_AnchorMax.y
