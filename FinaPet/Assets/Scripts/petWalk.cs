@@ -1,13 +1,13 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-//using System.Random;
 
-public class DogWalk : MonoBehaviour
+public class PetWalk : MonoBehaviour
 {
     public float speed = 2f;
     public float maxWalkTime = 6f;
     public float idleTime = 3f;
+    public float maxDistanceFromCenter = 10f; // Maximum horizontal distance from the origin (center of the viewport)
 
     private float timer;
     private int direction = 1;
@@ -15,18 +15,34 @@ public class DogWalk : MonoBehaviour
 
     private Animator animator;
 
+    // Store the initial starting X position to constrain movement
+    private float initialXPosition;
+
     private void Start()
     {
         timer = -1f;
         animator = GetComponent<Animator>();
+        initialXPosition = transform.position.x; // Record the initial X position
     }
 
     private void Update()
     {
-        if(timer < 0f) timer = Random.Range(1f, maxWalkTime);
+        if (timer < 0f) timer = Random.Range(1f, maxWalkTime);
 
         if (isWalking)
         {
+            // Calculate the next position
+            float nextXPosition = transform.position.x + (direction * speed * Time.deltaTime);
+
+            // Check if the next position is within the allowed bounds
+            if (Mathf.Abs(nextXPosition - initialXPosition) > maxDistanceFromCenter)
+            {
+                // If it goes out of bounds, reverse direction immediately
+                ChangeDirection();
+                // Recalculate nextXPosition with the new direction
+                nextXPosition = transform.position.x + (direction * speed * Time.deltaTime);
+            }
+
             // Move the animal
             transform.Translate(Vector2.right * direction * speed * Time.deltaTime);
 
@@ -35,7 +51,7 @@ public class DogWalk : MonoBehaviour
             {
                 isWalking = false;
                 timer = idleTime;
-                animator.SetBool("isWalking", false);  // Switch to idle animation
+                animator.SetBool("isWalking", false); // Switch to idle animation
             }
         }
         else
@@ -45,19 +61,30 @@ public class DogWalk : MonoBehaviour
             if (timer <= 0)
             {
                 isWalking = true;
-                //timer = walkTime;
-                timer = -1f;
+                timer = -1f; // Resets timer to get a new random walk time
 
-                //Random r = new Random();
-                var values = new[] { -1, 1 };
-                int dirChange = values[Random.Range(0,values.Length)];
-                // Flip direction
-                Vector3 scale = transform.localScale;
-                direction *= dirChange;
-                scale.x *= dirChange;
-                transform.localScale = scale;
+                ChangeDirection(); // Change direction when starting to walk again
                 animator.SetBool("isWalking", true);
             }
+        }
+    }
+
+    /// <summary>
+    /// Changes the horizontal direction of the GameObject and flips its local scale.
+    /// </summary>
+    private void ChangeDirection()
+    {
+        // Randomly choose between -1 and 1 for direction
+        int newDir = Random.Range(0, 2) * 2 - 1; // Generates either -1 or 1
+
+        // Only change direction if it's different from the current one,
+        // or if we're forcing a change due to hitting a boundary
+        if (newDir != direction)
+        {
+            direction = newDir;
+            Vector3 scale = transform.localScale;
+            scale.x = Mathf.Abs(scale.x) * direction; // Ensure scale.x is positive or negative based on direction
+            transform.localScale = scale;
         }
     }
 }
