@@ -42,14 +42,18 @@ public class RegistrationFormController : MonoBehaviour
             yield return null;
         }
 
-        WWW www = new WWW("http://localhost/register.php",form);
+        string apiPath = ServerConfig.LoadFromFile("Config/ServerConfig.json").GetApiPath();
+        Debug.Log("API Path: " + apiPath);
+        WWW www = new WWW(apiPath + "/register.php",form);
         yield return www;
 
         
         if (www.text == "0")
         {
             Debug.Log("Registration Successful");
-            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+            GameObject formRenderController = GameObject.Find("FormRenderController");
+            formRenderController.GetComponent<FormRenderScript>().showLoginForm();
+            
         }
         else
         {
