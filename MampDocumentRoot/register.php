@@ -1,14 +1,6 @@
 <?php
-
 	//Connects to sql database
-	$con = mysqli_connect('localhost','root','root','finapet');
-
-	//Checks connection status
-	if (mysqli_connect_errno())
-	{
-		echo "1"; //error code #1 = Connection failed
-		exit();
-	}
+	require 'db_connect.php';
 
 	//Parse variables from caller's POST request
 	$username = $_POST['username'];
@@ -21,17 +13,17 @@
 
 	if(mysqli_num_rows($usernameQueryResult)>0)
 	{
-		echo "3: Name already exists";
+		echo "3: Userame already exists";
 		exit();
 	}
 
 	//Check if email exists
 	$emailCheckQuery = "SELECT email FROM players WHERE email='" . $email . "';";
-	$emailQueryResult = mysqli_query($con,$emailCheckQuery) or die("2: Email check query failed");
+	$emailQueryResult = mysqli_query($con,$emailCheckQuery) or die("4: Email check query failed");
 
 	if(mysqli_num_rows($emailQueryResult)>0)
 	{
-		echo "3: Email already exists";
+		echo "5: Email already exists";
 		exit();
 	}
 
@@ -45,7 +37,7 @@
 		'" . $email . "',
 		'" . $hash . "',
 		'" . $salt . "');";
-	mysqli_query($con,$insertUserQuery) or die("4: Insert player query failed");
+	mysqli_query($con,$insertUserQuery) or die("6: Insert player query failed");
 
 	echo "0";
 ?>
