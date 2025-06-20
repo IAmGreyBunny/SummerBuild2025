@@ -1,13 +1,19 @@
 fileFormatVersion: 2
-guid: e22d84ec69c448b4cbaae9d979c6b410
+guid: b6975928ac5b5c044b0c67d4ba4e1f9e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6188544173058632022
-    second: ChickenIdleReal_0
+      213: 5953233694717440937
+    second: ChickenWalk_0
   - first:
-      213: -375045843926496268
-    second: ChickenIdleReal_1
+      213: -3144005945699931446
+    second: ChickenWalk_1
+  - first:
+      213: 841378961116846865
+    second: ChickenWalk_2
+  - first:
+      213: 5063540818832445716
+    second: ChickenWalk_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -40,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -54,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 130
+  spritePixelsToUnits: 25
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -78,7 +84,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -116,13 +122,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ChickenIdleReal_0
+      name: ChickenWalk_0
       rect:
         serializedVersion: 2
-        x: 610
-        y: 600
-        width: 190
-        height: 180
+        x: 31
+        y: 50
+        width: 36
+        height: 34
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +137,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 65929f7132022e550800000000000000
-      internalID: 6188544173058632022
+      spriteID: 9a3f486f0822e9250800000000000000
+      internalID: 5953233694717440937
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ChickenIdleReal_1
+      name: ChickenWalk_1
       rect:
         serializedVersion: 2
-        x: 1640
-        y: 600
-        width: 170
-        height: 170
+        x: 137
+        y: 50
+        width: 34
+        height: 34
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,8 +159,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4fb4642cac19bcaf0800000000000000
-      internalID: -375045843926496268
+      spriteID: acae6d2004f3e54d0800000000000000
+      internalID: -3144005945699931446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ChickenWalk_2
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 48
+        width: 38
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11b5bd215bd2dab00800000000000000
+      internalID: 841378961116846865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ChickenWalk_3
+      rect:
+        serializedVersion: 2
+        x: 350
+        y: 50
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 411d2340c8f454640800000000000000
+      internalID: 5063540818832445716
       vertices: []
       indices: 
       edges: []
@@ -163,7 +213,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: f97f3c1444567174fb2f8131e1c697e2
+    spriteID: 1dcba98ee5d062347b99c6c49da151cf
     internalID: 0
     vertices: []
     indices: 
@@ -175,8 +225,10 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      ChickenIdleReal_0: 6188544173058632022
-      ChickenIdleReal_1: -375045843926496268
+      ChickenWalk_0: 5953233694717440937
+      ChickenWalk_1: -3144005945699931446
+      ChickenWalk_2: 841378961116846865
+      ChickenWalk_3: 5063540818832445716
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
