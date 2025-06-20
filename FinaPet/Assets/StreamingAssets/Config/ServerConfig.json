@@ -1,0 +1,5 @@
+{
+  "serverIP": "localhost",
+  "serverPort": 80,
+  "apiBasePath": ""
+}
