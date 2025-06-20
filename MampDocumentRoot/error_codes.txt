@@ -1,0 +1,7 @@
+0: success
+1: Database connection failed
+2: Username check query failed
+3: Userame already exists
+4: Email check query failed
+5: Email already exists
+6: Insert player query failed
