@@ -55,6 +55,7 @@ public class LoginFormController : MonoBehaviour
             {
                 Debug.Log("Login Successful");
                 SceneManager.LoadScene("MainMenu");
+                PlayerAuthSession.StartSession(loginResponse.player_data.username, loginResponse.player_data.player_id);
             }
             else
             {
