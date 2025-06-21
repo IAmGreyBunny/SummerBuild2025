@@ -1,12 +1,24 @@
 <?php
+    header('Content-Type: application/json');
 
-// Connects to MySQL database
-$con = mysqli_connect('localhost', 'root', 'root', 'finapet');
+    // Error info
+    $status_code = 0;
+    $error_message = "";
 
-// Check connection
-if (mysqli_connect_errno()) {
-    echo "1: Database connection failed"; // Error code 1 = connection failed
-    exit();
-}
+    // Connects to MySQL database
+    $con = mysqli_connect('localhost', 'root', 'root', 'finapet');
+
+    // Check connection
+    if (mysqli_connect_errno()) {
+        $status_code = 1;
+        $error_message = "Database connection failed";
+
+        echo json_encode([
+        "status_code" => $status_code,
+        "error_message" => $error_message
+        ]);
+
+        exit();
+    }
 
 ?>
