@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -38,19 +39,27 @@ public class LoginFormController : MonoBehaviour
 
         string apiPath = ServerConfig.LoadFromFile("Config/ServerConfig.json").GetApiPath();
         Debug.Log("API Path: " + apiPath);
-        WWW www = new WWW(apiPath + "/login.php",form);
-        yield return www;
+        UnityWebRequest request = UnityWebRequest.Post(apiPath + "/login.php", form);
+        yield return request.SendWebRequest();
 
-        
-        if (www.text == "0")
+
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
-            Debug.Log("Login Successful");
-            SceneManager.LoadScene("MainMenu");
+            Debug.LogError("Request error: " + request.error);
         }
         else
         {
-            Debug.Log(www.text);
-            Debug.Log("User Login Failed");
+            _LoginResponse loginResponse = JsonUtility.FromJson<_LoginResponse>(request.downloadHandler.text);
+
+            if (loginResponse.status_code == 0)
+            {
+                Debug.Log("Login Successful");
+                SceneManager.LoadScene("MainMenu");
+            }
+            else
+            {
+                Debug.Log("Login Failed with message: " + loginResponse.error_message);
+            }
         }
     }
 
@@ -62,5 +71,20 @@ public class LoginFormController : MonoBehaviour
 
         return true;
 
+    }
+
+    [Serializable]
+    private class _LoginResponse
+    {
+        public int status_code;
+        public string error_message;
+        public _PlayerData player_data;
+    }
+
+    [Serializable]
+    private class _PlayerData
+    {
+        public int player_id;
+        public string username;
     }
 }

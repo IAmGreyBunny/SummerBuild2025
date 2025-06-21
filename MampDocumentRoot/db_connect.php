@@ -2,8 +2,8 @@
     header('Content-Type: application/json');
 
     // Error info
-    $status_code = 0
-    $error_message = ""
+    $status_code = 0;
+    $error_message = "";
 
     // Connects to MySQL database
     $con = mysqli_connect('localhost', 'root', 'root', 'finapet');
