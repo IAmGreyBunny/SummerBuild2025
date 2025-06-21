@@ -46,7 +46,6 @@ public class LoginFormController : MonoBehaviour
         {
             Debug.Log("Login Successful");
             SceneManager.LoadScene("MainMenu");
-            
         }
         else
         {
