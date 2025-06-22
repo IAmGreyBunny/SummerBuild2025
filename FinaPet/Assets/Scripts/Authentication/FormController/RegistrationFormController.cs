@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class RegistrationFormController : MonoBehaviour
@@ -44,22 +45,30 @@ public class RegistrationFormController : MonoBehaviour
 
         string apiPath = ServerConfig.LoadFromFile("Config/ServerConfig.json").GetApiPath();
         Debug.Log("API Path: " + apiPath);
-        WWW www = new WWW(apiPath + "/register.php",form);
-        yield return www;
+        UnityWebRequest request = UnityWebRequest.Post(apiPath + "/register.php", form);
+        yield return request.SendWebRequest();
 
-        
-        if (www.text == "0")
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
-            Debug.Log("Registration Successful");
-            GameObject formRenderController = GameObject.Find("FormRenderController");
-            formRenderController.GetComponent<FormRenderScript>().showLoginForm();
-            
+            Debug.LogError("Request error: " + request.error);
         }
         else
         {
-            Debug.Log(www.text);
-            Debug.Log("User registration Failed");
+            _RegistrationResponse registrationResponse = JsonUtility.FromJson<_RegistrationResponse>(request.downloadHandler.text);
+            if (registrationResponse.status_code == 0)
+            {
+                Debug.Log("Registration Successful");
+                GameObject formRenderController = GameObject.Find("FormRenderController");
+                formRenderController.GetComponent<FormRenderScript>().showLoginForm();
+
+            }
+            else
+            {
+                Debug.Log(registrationResponse.error_message);
+                Debug.Log("User registration Failed");
+            }
         }
+
     }
 
     public bool verifyInputs()
@@ -76,5 +85,12 @@ public class RegistrationFormController : MonoBehaviour
 
         return true;
 
+    }
+
+    [Serializable]
+    private class _RegistrationResponse
+    {
+        public int status_code;
+        public string error_message;
     }
 }

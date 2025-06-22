@@ -1,14 +1,12 @@
 <?php
+	header('Content-Type: application/json');
+
+    // Error info
+    $status_code = 0;
+    $error_message = "";
 
 	//Connects to sql database
-	$con = mysqli_connect('localhost','root','root','finapet');
-
-	//Checks connection status
-	if (mysqli_connect_errno())
-	{
-		echo "1"; //error code #1 = Connection failed
-		exit();
-	}
+	require 'db_connect.php';
 
 	//Parse variables from caller's POST request
 	$username = $_POST['username'];
@@ -17,21 +15,50 @@
 	
 	//Check if username exists
 	$usernameCheckQuery = "SELECT username FROM players WHERE username='" . $username . "';";
-	$usernameQueryResult = mysqli_query($con,$usernameCheckQuery) or die("2: Username check query failed");
+	$usernameQueryResult = mysqli_query($con,$usernameCheckQuery);
+
+	if (!$usernameQueryResult) {
+	    echo json_encode([
+	        "status_code" => 2,
+	        "error_message" => "Username check query failed"
+	    ]);
+	    exit();
+	}
 
 	if(mysqli_num_rows($usernameQueryResult)>0)
 	{
-		echo "3: Name already exists";
+		$status_code = 3; 
+        $error_message = "Username already exists";
+
+        echo json_encode([
+        "status_code" => $status_code,
+        "error_message" => $error_message
+        ]);
 		exit();
 	}
 
 	//Check if email exists
 	$emailCheckQuery = "SELECT email FROM players WHERE email='" . $email . "';";
-	$emailQueryResult = mysqli_query($con,$emailCheckQuery) or die("2: Email check query failed");
+	$emailQueryResult = mysqli_query($con,$emailCheckQuery);
+
+
+	if (!$emailQueryResult) {
+	    echo json_encode([
+	        "status_code" => 4,
+	        "error_message" => "Email check query failed"
+	    ]);
+	    exit();
+	}
 
 	if(mysqli_num_rows($emailQueryResult)>0)
 	{
-		echo "3: Email already exists";
+		$status_code = 5; 
+        $error_message = "Email already exists";
+
+        echo json_encode([
+        "status_code" => $status_code,
+        "error_message" => $error_message
+        ]);
 		exit();
 	}
 
@@ -45,7 +72,17 @@
 		'" . $email . "',
 		'" . $hash . "',
 		'" . $salt . "');";
-	mysqli_query($con,$insertUserQuery) or die("4: Insert player query failed");
+	$insertUserQueryResult = mysqli_query($con,$insertUserQuery);
+	if (!$insertUserQueryResult) {
+    echo json_encode([
+        "status_code" => 6,
+        "error_message" => "Insert player query failed"
+    ]);
+    exit();
+}
 
-	echo "0";
+	echo json_encode([
+        "status_code" => $status_code,
+        "error_message" => $error_message
+    ]);
 ?>
