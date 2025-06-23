@@ -8,6 +8,8 @@ public class BackButtonHandler : MonoBehaviour
     /// </summary>
     public void OnBackButtonClick()
     {
+        Debug.Log("Back button clicked");
+
         // Check if the instance exists to prevent errors
         if (SceneController.Instance != null)
         {

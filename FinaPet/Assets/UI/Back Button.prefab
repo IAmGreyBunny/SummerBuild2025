@@ -298,6 +298,7 @@ GameObject:
   - component: {fileID: 5805084555419299892}
   - component: {fileID: 3225835652598028103}
   - component: {fileID: 9090896394885667834}
+  - component: {fileID: 7020524432940507342}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -406,7 +407,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3225835652598028103}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7020524432940507342}
+        m_TargetAssemblyTypeName: BackButtonHandler, Assembly-CSharp
+        m_MethodName: OnBackButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &7020524432940507342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4835358028372594551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d262b30eee0eee498feed0037f48526, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4863468925824627962
 GameObject:
   m_ObjectHideFlags: 0
