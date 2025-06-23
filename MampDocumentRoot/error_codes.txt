@@ -7,3 +7,4 @@
 6: Insert player query failed
 7: Invalid JSON
 8: Get Pets Query Failed
+9: Get Shop Item Query Failed
