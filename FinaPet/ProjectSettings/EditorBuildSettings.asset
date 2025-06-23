@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Home.unity
     guid: 2e16504c96b455148adfb84c0718e933
   - enabled: 1
-    path: Assets/Scenes/My Pets.unity
+    path: Assets/Scenes/Old my pet.unity
     guid: 8ca2d7c275431904e84c03837f963401
   - enabled: 1
     path: Assets/Scenes/Inventory.unity
