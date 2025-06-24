@@ -12,4 +12,7 @@
 11: Get Inventory Query Failed
 12: Get Player Data Query Failed
 13: Update Pet Query Failed
+14: coin value not provided
+15: avatar_sprite_id value not provided
+16: Update Player_data Query Failed
 18: Drop Pet Query Failed
