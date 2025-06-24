@@ -17,7 +17,7 @@ public class OwnedPetsManager : MonoBehaviour
     void Start()
     {
         // Automatically fetch and spawn pets when the scene starts.
-        if(PlayerAuthSession.IsLoggedIn == true)
+        if (PlayerAuthSession.IsLoggedIn == true)
         {
             Debug.Log("Player Logged in: " + PlayerAuthSession.PlayerId);
             ownerId = PlayerAuthSession.PlayerId;
@@ -49,6 +49,9 @@ public class OwnedPetsManager : MonoBehaviour
             Debug.LogError("PetSpawner is not assigned in the OwnedPetsManager Inspector!");
             yield break; // Stop the coroutine
         }
+
+        // --- NEW: Clear any previously spawned pets before fetching and spawning new ones ---
+        petSpawner.ClearAllSpawnedPets(); // This ensures we don't accumulate pets or only show the last one
 
         // --- 2. Prepare the JSON Request ---
         // Create a request object to be converted to JSON.
@@ -94,9 +97,8 @@ public class OwnedPetsManager : MonoBehaviour
                     // Loop through each pet in the response and spawn it
                     foreach (var pet in response.pets)
                     {
-                        // Use the existing PetSpawner to create the pet by its type/index
-                        Debug.Log($"Spawning pet of type: {pet.pet_type}");
-                        petSpawner.SetAndSpawnPet(pet.pet_type);
+                        Debug.Log($"Spawning pet of type: {pet.pet_type} with ID: {pet.pet_id}, Hunger: {pet.hunger}, Affection: {pet.affection}");
+                        petSpawner.SpawnPetWithData(pet); // Call the new method with full data
                     }
                 }
                 else
@@ -108,16 +110,16 @@ public class OwnedPetsManager : MonoBehaviour
         }
     }
 
-    // --- Helper classes to match the JSON structure ---
+    // --- Helper classes to match the JSON structure (These remain the same) ---
 
     [System.Serializable]
-    private class GetPetsRequestData
+    public class GetPetsRequestData
     {
         public int owner_id;
     }
 
     [System.Serializable]
-    private class GetPetsResponseData
+    public class GetPetsResponseData
     {
         public int status_code;
         public string error_message;
@@ -125,7 +127,7 @@ public class OwnedPetsManager : MonoBehaviour
     }
 
     [System.Serializable]
-    private class PetData
+    public class PetData
     {
         public int pet_id;
         public int owner_id;
