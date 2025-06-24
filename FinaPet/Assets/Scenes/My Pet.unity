@@ -2014,7 +2014,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneChange: {fileID: 1339949515}
-  petTypeToCheck: 0
+  petTypeToCheck: 1
   entryButton: {fileID: 1339949512}
   petManager: {fileID: 1373401355}
 --- !u!114 &1339949512

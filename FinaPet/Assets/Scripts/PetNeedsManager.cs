@@ -16,7 +16,7 @@ public class PetNeedsManager : MonoBehaviour
     void Start()
     {
         nextDecreaseTime = Time.time + decreaseIntervalInSeconds;
-        hungerSlider.value = 1f; // Full hunger at start
+        hungerSlider.value = 100f; // Full hunger at start
     }
 
     void Update()
@@ -36,7 +36,7 @@ public class PetNeedsManager : MonoBehaviour
 
     public void FeedPet()
     {
-        hungerSlider.value = Mathf.Min(1f, hungerSlider.value + feedAmount);
+        hungerSlider.value = Mathf.Min(100f, hungerSlider.value + feedAmount);
         Debug.Log("Feeding the pet. Hunger is now: " + hungerSlider.value);
     }
 }
