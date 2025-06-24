@@ -15,4 +15,5 @@
 14: coin value not provided
 15: avatar_sprite_id value not provided
 16: Update Player_data Query Failed
+17: pet_id value not provided
 18: Drop Pet Query Failed
