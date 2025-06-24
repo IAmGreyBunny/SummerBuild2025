@@ -2600,11 +2600,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4945110944758172711, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
       propertyPath: m_Name
-      value: MyCollectionButton
+      value: BudgetingButton
       objectReference: {fileID: 0}
     - target: {fileID: 5823888824340587358, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
       propertyPath: m_text
-      value: Saving Target
+      value: Budgeting
       objectReference: {fileID: 0}
     - target: {fileID: 8861055301295400456, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
       propertyPath: m_Pivot.x
