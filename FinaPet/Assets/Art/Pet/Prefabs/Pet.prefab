@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 3356357096961356401}
   - component: {fileID: 7565705172199978138}
   - component: {fileID: 9199883974070437253}
+  - component: {fileID: 1383043863795540593}
   m_Layer: 0
   m_Name: Pet
   m_TagString: Untagged
@@ -203,3 +204,21 @@ MonoBehaviour:
   speed: 2
   maxWalkTime: 6
   idleTime: 3
+  maxDistanceFromCenter: 10
+--- !u!114 &1383043863795540593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2298644403218216263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92b61472ec46f674fb85e288c572e95b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  petId: 0
+  ownerId: 0
+  petType: 0
+  currentHunger: 0
+  currentAffection: 0
