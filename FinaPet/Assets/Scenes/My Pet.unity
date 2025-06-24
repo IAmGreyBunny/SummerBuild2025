@@ -300,8 +300,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_HighlightedColor: {r: 0.5921569, g: 0.9372549, b: 0.94509804, a: 1}
+    m_PressedColor: {r: 0.48593804, g: 0.9811321, b: 0.49091288, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -321,7 +321,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 69531205}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1936264925}
+        m_TargetAssemblyTypeName: PetSelector, Assembly-CSharp
+        m_MethodName: NextPet
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &69531205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1941,7 +1953,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -5513050994037168576, guid: 0084de68864a3904a96cd5a0c90b97f1, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2014,8 +2026,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneChange: {fileID: 1339949515}
-  petTypeToCheck: 1
   entryButton: {fileID: 1339949512}
+  displayController: {fileID: 1936264925}
   petManager: {fileID: 1373401355}
 --- !u!114 &1339949512
 MonoBehaviour:
@@ -3214,6 +3226,58 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!1 &1936264924
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1936264926}
+  - component: {fileID: 1936264925}
+  m_Layer: 0
+  m_Name: UI_PetController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1936264925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936264924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22fd615e73399d042b2eb3e1557e0953, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  petSprites:
+  - {fileID: -5513050994037168576, guid: 0084de68864a3904a96cd5a0c90b97f1, type: 3}
+  - {fileID: -3600481908090578784, guid: f54aa887006ae02429d83c649546ee23, type: 3}
+  - {fileID: 1387758523395646421, guid: 3be2a0d16ea64f74d9aaa7e110eb189a, type: 3}
+  petDisplayImage: {fileID: 1161428957}
+  OnPetChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!4 &1936264926
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936264924}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 415.52487, y: 241.9277, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1957954596
 GameObject:
   m_ObjectHideFlags: 0
@@ -3275,8 +3339,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_HighlightedColor: {r: 0.5918476, g: 0.9365114, b: 0.9433962, a: 1}
+    m_PressedColor: {r: 0.4862745, g: 0.98039216, b: 0.49019608, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -3296,7 +3360,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1957954599}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1936264925}
+        m_TargetAssemblyTypeName: PetSelector, Assembly-CSharp
+        m_MethodName: PreviousPet
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1957954599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3794,3 +3870,4 @@ SceneRoots:
   - {fileID: 758204564}
   - {fileID: 1373401356}
   - {fileID: 1520968244}
+  - {fileID: 1936264926}
