@@ -1,13 +1,13 @@
 <?php
     header('Content-Type: application/json');
-    require_once 'db_config.php';
+    require 'db_config.php';
 
     // Error info
     $status_code = 0;
     $error_message = "";
 
     // Connects to MySQL database
-    $con = mysqli_connect('localhost', $db_username, $db_password, 'finapet');
+    $con = mysqli_connect('localhost', $db_username, $db_password, 'finapet', $db_port);
 
     // Check connection
     if (mysqli_connect_errno()) {
