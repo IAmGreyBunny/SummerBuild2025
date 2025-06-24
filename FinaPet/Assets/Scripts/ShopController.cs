@@ -1,10 +1,14 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public class ShopController : MonoBehaviour
 {
+    public GameObject shopItemCardPrefab;
+    public Transform shopItemParent;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -59,7 +63,8 @@ public class ShopController : MonoBehaviour
                 // Iterate through the items array and print each item's details
                 foreach (_ShopItem item in getShopItemsResponse.items)
                 {
-                    Debug.Log($"Item ID: {item.item_id}, Item Name: {item.item_name}");
+                    GameObject currentShopCard = Instantiate(shopItemCardPrefab, shopItemParent);
+                    currentShopCard.transform.Find("Box Body").Find("Label").GetComponent<TMP_Text>().text = item.item_name;
                 }
             }
             else
