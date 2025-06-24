@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &1
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e6fedc2472449cead18ef23b5cb30d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Library:
+  - m_Name: Main
+    m_Hash: 521822810
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: gurl_0
+      m_Hash: 234936986
+      m_Sprite: {fileID: -8771350949733757393, guid: 2bc1befcc149c734d8476a184527868d, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: -8771350949733757393, guid: 2bc1befcc149c734d8476a184527868d, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 1
+  - m_Name: Head
+    m_Hash: 130111906
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: girlhead_0
+      m_Hash: 551094107
+      m_Sprite: {fileID: 1672065278671013532, guid: 2b6dc293c41a75145b95e13cbaa56310, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 1672065278671013532, guid: 2b6dc293c41a75145b95e13cbaa56310, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 1
+  m_PrimaryLibraryGUID: 
+  m_ModificationHash: 638863997531069901
+  m_Version: 1
