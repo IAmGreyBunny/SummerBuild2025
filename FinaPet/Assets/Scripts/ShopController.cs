@@ -22,7 +22,20 @@ public class ShopController : MonoBehaviour
     {
 
         Debug.Log("GetShopItems called");
-        string apiPath = ServerConfig.LoadFromFile("Config/ServerConfig.json").GetApiPath();
+        // Ensure ServerConfig.LoadFromFile("Config/ServerConfig.json").GetApiPath() returns a valid URL
+        // For demonstration, let's assume a placeholder if ServerConfig is not available
+        string apiPath = "";
+        try
+        {
+            apiPath = ServerConfig.LoadFromFile("Config/ServerConfig.json").GetApiPath();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Failed to load ServerConfig: " + e.Message + ". Using placeholder API path.");
+            // Fallback for demonstration if ServerConfig isn't properly set up
+            apiPath = "http://localhost:80/your_game_api";
+        }
+
         Debug.Log("API Path: " + apiPath);
         UnityWebRequest request = UnityWebRequest.PostWwwForm(apiPath + "/get_shop_items.php", "");
         yield return request.SendWebRequest();
@@ -34,15 +47,24 @@ public class ShopController : MonoBehaviour
         }
         else
         {
+            // First, print the raw JSON response to see exactly what you're getting from the server
+            Debug.Log("Raw JSON Response: " + request.downloadHandler.text);
+
             _GetShopItemsResponse getShopItemsResponse = JsonUtility.FromJson<_GetShopItemsResponse>(request.downloadHandler.text);
 
             if (getShopItemsResponse.status_code == 0)
             {
-                Debug.Log(getShopItemsResponse.items.Length);
+                Debug.Log("Number of items fetched: " + getShopItemsResponse.items.Length);
+
+                // Iterate through the items array and print each item's details
+                foreach (_ShopItem item in getShopItemsResponse.items)
+                {
+                    Debug.Log($"Item ID: {item.item_id}, Item Name: {item.item_name}");
+                }
             }
             else
             {
-                Debug.Log("Get shop item Failed with message: " + getShopItemsResponse.error_message);
+                Debug.LogWarning("Get shop item Failed with status code: " + getShopItemsResponse.status_code + ", message: " + getShopItemsResponse.error_message);
             }
         }
     }
