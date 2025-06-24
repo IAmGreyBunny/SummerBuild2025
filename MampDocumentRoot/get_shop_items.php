@@ -18,7 +18,6 @@ if($json === null){
 	exit();
 }
 
-$owner_id = $json['owner_id'] ?? '';
 //Query Shop
 $getShopItemsQuery = "SELECT * FROM items";
 $getShopItemsQueryResult = mysqli_query($con,$getPetsQuery);
