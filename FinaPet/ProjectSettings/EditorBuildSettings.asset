@@ -32,6 +32,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Saving Target.unity
     guid: 31098591c2a901c4c9fbad004c42b675
+  - enabled: 1
+    path: Assets/Scenes/Setting.unity
+    guid: ff3e61a7ad3297144bf6a0bb7f909cbd
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

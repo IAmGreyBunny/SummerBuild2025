@@ -1,39 +1,32 @@
 using UnityEngine;
-
+// Make sure this is attached to an active GameObject in your scene.
 public class SoundManager : MonoBehaviour
 {
-    // You can call this method from a UI button, another script, or an event.
-    public void MuteAllSound()
+    // This Awake function runs when the script instance is being loaded.
+    private void Awake()
     {
-        AudioListener.volume = 0;
-        Debug.Log("All sounds muted.");
+        Debug.Log("SoundManager script has started!");
     }
 
-    public void UnmuteAllSound()
-    {
-        AudioListener.volume = 1; // 1 is full volume
-        Debug.Log("All sounds unmuted.");
-    }
+    // This is the function the checkbox should call.
+    // In your SoundManager.cs script
 
-    // Optional: A method to toggle mute state
-    public void ToggleMuteSound()
+    public void SetSoundState(bool isSoundOn)
     {
-        if (AudioListener.volume == 0)
+        // This log will tell us IF the function is being called and WHAT value it received.
+        Debug.Log($"Checkbox value changed! isSoundOn is: {isSoundOn}");
+
+        if (isSoundOn)
         {
-            UnmuteAllSound();
+            // If the checkbox is ticked (isSoundOn is true), set volume to 1 (ON)
+            AudioListener.volume = 1;
+            Debug.Log("AudioListener.volume set to 1. Sounds should be ON.");
         }
         else
         {
-            MuteAllSound();
+            // If the checkbox is unticked (isSoundOn is false), set volume to 0 (MUTED)
+            AudioListener.volume = 0;
+            Debug.Log("AudioListener.volume set to 0. Sounds should be MUTED.");
         }
-    }
-
-    // Example of how you might use it (e.g., press 'M' to mute/unmute)
-    void Update()
-    {
-        //if (Input.GetKeyDown(KeyCode.M))
-        //{
-        //    ToggleMuteSound();
-        //}
     }
 }
