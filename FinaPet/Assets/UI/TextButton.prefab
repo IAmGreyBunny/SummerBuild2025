@@ -108,6 +108,7 @@ GameObject:
   - component: {fileID: 48694164294311699}
   - component: {fileID: 2447460538752790516}
   - component: {fileID: 7572377753530071620}
+  - component: {fileID: 1870700274254969152}
   m_Layer: 5
   m_Name: TextButton
   m_TagString: Untagged
@@ -188,7 +189,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2468670351343363240}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MainMenuScript, Assembly-CSharp
+        m_MethodName: LoadHomeScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1870700274254969152}
+        m_TargetAssemblyTypeName: SceneChangeButtonHandler, Assembly-CSharp
+        m_MethodName: PerformSceneChange
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &7572377753530071620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,6 +234,20 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &1870700274254969152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4945110944758172711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afe1597e4dbc5ae48922a67aefc50fcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneNameToLoad: 
+  isAdditive: 0
 --- !u!1 &4998234844511750524
 GameObject:
   m_ObjectHideFlags: 0
