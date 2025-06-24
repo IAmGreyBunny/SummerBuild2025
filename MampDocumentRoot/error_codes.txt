@@ -8,3 +8,5 @@
 7: Invalid JSON
 8: Get Pets Query Failed
 9: Get Shop Item Query Failed
+10: player_id not provided
+11: Get Inventory Query Failed
