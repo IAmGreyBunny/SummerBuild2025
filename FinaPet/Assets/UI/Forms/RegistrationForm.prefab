@@ -494,6 +494,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RegistrationForm
       objectReference: {fileID: 0}
+    - target: {fileID: 1466118598071798079, guid: 5289f236cdd21b9448570d2fe1e696c5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1857125959551061565, guid: 5289f236cdd21b9448570d2fe1e696c5, type: 3}
       propertyPath: m_fontSize
       value: 30
