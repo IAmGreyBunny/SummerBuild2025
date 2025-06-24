@@ -3456,6 +3456,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2120042523}
     m_Modifications:
+    - target: {fileID: 1870700274254969152, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
+      propertyPath: sceneNameToLoad
+      value: PetScene
+      objectReference: {fileID: 0}
     - target: {fileID: 2447460538752790516, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
       propertyPath: m_TargetGraphic
       value: 

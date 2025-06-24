@@ -6,7 +6,7 @@ public class MainMenuScript : MonoBehaviour
     public void LoadHomeScene()
     {
         Debug.Log("Loading Home Scene...");
-        SceneManager.LoadScene("Home");
+        //SceneManager.LoadScene("Home");
         Debug.Log("Home Scene Loaded");
     }
 
