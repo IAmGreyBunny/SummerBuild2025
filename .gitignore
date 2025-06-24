@@ -83,7 +83,7 @@ crashlytics-build.properties
 /FinaPet/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db.meta
 /FinaPet/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers
 /FinaPet/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers.meta
-FinaPet/Assets/StreamingAssets/Config/ServerConfig.json
-MampDocumentRoot/db_config.php
-FinaPet/Assets/StreamingAssets/Config/ServerConfig.json
-FinaPet/Assets/StreamingAssets/Config/ServerConfig.json
+/FinaPet/[Aa]ssets/StreamingAssets/Config/ServerConfig.json
+
+#DB Config
+/MampDocumentRoot/db_config.php
