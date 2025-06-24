@@ -87,3 +87,4 @@ crashlytics-build.properties
 
 #DB Config
 /MampDocumentRoot/db_config.php
+FinaPet/Assets/StreamingAssets/Config/ServerConfig.json
