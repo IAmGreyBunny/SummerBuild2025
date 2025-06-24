@@ -4,28 +4,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System;
-using System.Collections.Generic;
 
-// Note: You can nest these classes inside PlayerDataManager if you prefer,
-// but keeping them separate often makes for cleaner code when you have many data models.
 
 /// <summary>
 /// Represents the player's main data structure as returned from the server.
-/// Adjust fields to match your 'player_data' table columns exactly.
+/// Fields match your 'player_data' table columns exactly.
 /// </summary>
 [System.Serializable]
 public class PlayerMainData
 {
-    // Ensure these field names match the column names in your 'player_data' table
-    // and the keys in the JSON response from get_player_data.php.
     public int player_id;
-    public string username; // Assuming you have a username field
-    public int coins;      // Assuming you have a coins field
-    public int gems;       // Assuming you have a gems field
-    // Add any other player-specific data fields from your database here.
-    // Example: public string last_login;
-    // Example: public int level;
-    // Example: public int experience;
+    public int coin;
+    public int avatar_sprite_id;
 }
 
 /// <summary>
@@ -126,7 +116,7 @@ public static class PlayerDataManager
                             CurrentPlayerMainData = response.player_data[0];
                             IsDataLoaded = true;
                             LastErrorMessage = ""; // Clear any previous errors
-                            Debug.Log($"PlayerDataManager: Successfully loaded data for player '{CurrentPlayerMainData.username}' (ID: {CurrentPlayerMainData.player_id}). Coins: {CurrentPlayerMainData.coins}, Gems: {CurrentPlayerMainData.gems}");
+                            Debug.Log($"PlayerDataManager: Successfully loaded data for player (ID: {CurrentPlayerMainData.player_id}). Coins: {CurrentPlayerMainData.coin}, Sprite: {CurrentPlayerMainData.avatar_sprite_id}");
                         }
                         else
                         {
