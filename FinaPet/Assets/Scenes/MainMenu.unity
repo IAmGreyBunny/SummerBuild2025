@@ -1425,6 +1425,7 @@ GameObject:
   - component: {fileID: 846767208}
   - component: {fileID: 846767210}
   - component: {fileID: 846767211}
+  - component: {fileID: 846767213}
   m_Layer: 5
   m_Name: CharacterSprite
   m_TagString: Untagged
@@ -1559,6 +1560,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneNameToLoad: My Profile
   isAdditive: 0
+--- !u!114 &846767213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 846767206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4272f52e538d8ae4685ccbb81969b41d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerAvatarImage: {fileID: 846767208}
+  avatarSprites:
+  - {fileID: -8771350949733757393, guid: 2bc1befcc149c734d8476a184527868d, type: 3}
+  - {fileID: 431512648808933374, guid: e7a46e36bb7cbec4ca2a2d6007a735e1, type: 3}
+  debugPlayerId: 10
 --- !u!1 &1057918798
 GameObject:
   m_ObjectHideFlags: 0
@@ -2582,11 +2600,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4945110944758172711, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
       propertyPath: m_Name
-      value: MyCollectionButton
+      value: BudgetingButton
       objectReference: {fileID: 0}
     - target: {fileID: 5823888824340587358, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
       propertyPath: m_text
-      value: Saving Target
+      value: Budgeting
       objectReference: {fileID: 0}
     - target: {fileID: 8861055301295400456, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
       propertyPath: m_Pivot.x
