@@ -64,7 +64,7 @@ public class ShopController : MonoBehaviour
                 foreach (_ShopItem item in getShopItemsResponse.items)
                 {
                     GameObject currentShopCard = Instantiate(shopItemCardPrefab, shopItemParent);
-                    currentShopCard.transform.Find("Box Body").Find("Label").GetComponent<TMP_Text>().text = item.item_name;
+                    currentShopCard.transform.Find("Box Body").Find("Label").GetComponent<TMP_Text>().text = $"{item.item_name} - ${item.item_price}";
                 }
             }
             else
@@ -87,5 +87,6 @@ public class ShopController : MonoBehaviour
     {
         public int item_id;
         public string item_name;
+        public int item_price;
     }
 }
