@@ -2012,7 +2012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0c5b6ad868f3bf41b5a6adb5065c1ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  petTypeToCheck: 1
+  petTypeToCheck: 0
   entryButton: {fileID: 1339949512}
   petManager: {fileID: 1373401355}
 --- !u!114 &1339949512
