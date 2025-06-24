@@ -11,3 +11,4 @@
 10: player_id not provided
 11: Get Inventory Query Failed
 12: Get Player Data Query Failed
+13: Update Pet Query Failed
