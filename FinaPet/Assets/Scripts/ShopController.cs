@@ -8,19 +8,20 @@ public class ShopController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        GetShopItems();
+        Debug.Log("ShopController Start called");
+        callGetShopItems();
     }
 
-    // Update is called once per frame
-    void Update()
+
+    public void callGetShopItems()
     {
-
+        Debug.Log("GetShopItems called from public method");
+        StartCoroutine(GetShopItems());
     }
-
     IEnumerator GetShopItems()
     {
 
-
+        Debug.Log("GetShopItems called");
         string apiPath = ServerConfig.LoadFromFile("Config/ServerConfig.json").GetApiPath();
         Debug.Log("API Path: " + apiPath);
         UnityWebRequest request = UnityWebRequest.PostWwwForm(apiPath + "/get_shop_items.php", "");
@@ -37,7 +38,7 @@ public class ShopController : MonoBehaviour
 
             if (getShopItemsResponse.status_code == 0)
             {
-                Debug.Log(getShopItemsResponse.shop_items.Length);
+                Debug.Log(getShopItemsResponse.items.Length);
             }
             else
             {
@@ -51,7 +52,7 @@ public class ShopController : MonoBehaviour
     {
         public int status_code;
         public string error_message;
-        public _ShopItem[] shop_items;
+        public _ShopItem[] items;
     }
 
     [Serializable]
