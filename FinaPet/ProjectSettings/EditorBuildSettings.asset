@@ -35,6 +35,21 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Setting.unity
     guid: ff3e61a7ad3297144bf6a0bb7f909cbd
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: cd826b5e495fbb14797d3bb1bc3aa370
+  - enabled: 1
+    path: Assets/Scenes/Add Expense.unity
+    guid: 74760e862d76e6d4aa09331eb00df43a
+  - enabled: 1
+    path: Assets/Scenes/AuthPage.unity
+    guid: a9e8384af94f1c540895c0e9ddd61ee3
+  - enabled: 1
+    path: Assets/Scenes/Intro Video.unity
+    guid: 7671531a9180ced4da17a07400dd9477
+  - enabled: 1
+    path: Assets/Scenes/My Profile.unity
+    guid: ae3293e5507dd914f852e1ce30f5b0d5
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

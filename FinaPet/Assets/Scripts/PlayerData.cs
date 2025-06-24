@@ -48,6 +48,10 @@ public static class PlayerDataManager
     public static PlayerMainData CurrentPlayerMainData { get; private set; }
     public static bool IsDataLoaded { get; private set; } = false;
     public static string LastErrorMessage { get; private set; } = "";
+    // New: Properties to track the result of the update operation
+    public static bool IsUpdateSuccessful { get; private set; } = false;
+    public static string LastUpdateMessage { get; private set; } = "";
+
 
     /// <summary>
     /// Resets the loaded player data and status.
@@ -58,6 +62,8 @@ public static class PlayerDataManager
         CurrentPlayerMainData = null;
         IsDataLoaded = false;
         LastErrorMessage = "";
+        IsUpdateSuccessful = false; // Reset update status too
+        LastUpdateMessage = "";     // Reset update message
         Debug.Log("Player data has been reset.");
     }
 
@@ -116,7 +122,7 @@ public static class PlayerDataManager
                             CurrentPlayerMainData = response.player_data[0];
                             IsDataLoaded = true;
                             LastErrorMessage = ""; // Clear any previous errors
-                            Debug.Log($"PlayerDataManager: Successfully loaded data for player (ID: {CurrentPlayerMainData.player_id}). Coins: {CurrentPlayerMainData.coin}, Sprite: {CurrentPlayerMainData.avatar_sprite_id}");
+                            Debug.Log($"PlayerDataManager: Successfully loaded data for player ID: {CurrentPlayerMainData.player_id}. Coins: {CurrentPlayerMainData.coin}, Avatar Sprite ID: {CurrentPlayerMainData.avatar_sprite_id}");
                         }
                         else
                         {
@@ -140,5 +146,99 @@ public static class PlayerDataManager
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Initiates a coroutine to update player data on the server.
+    /// This method should be called from a MonoBehaviour using StartCoroutine.
+    /// Example: `StartCoroutine(PlayerDataManager.UpdatePlayerDataOnServer(10, 10, 1));`
+    /// </summary>
+    /// <param name="playerId">The ID of the player to update.</param>
+    /// <param name="coins">The new coin value.</param>
+    /// <param name="avatarSpriteId">The new avatar sprite ID.</param>
+    /// <returns>IEnumerator for use in a Coroutine.</returns>
+    public static IEnumerator UpdatePlayerDataOnServer(int playerId, int coins, int avatarSpriteId)
+    {
+        IsUpdateSuccessful = false; // Reset update status
+        LastUpdateMessage = "";     // Clear previous update message
+
+        // --- 1. Prepare the JSON Request ---
+        // The structure of the update request matches PlayerMainData
+        PlayerMainData updateData = new PlayerMainData
+        {
+            player_id = playerId,
+            coin = coins,
+            avatar_sprite_id = avatarSpriteId
+        };
+        string jsonRequestBody = JsonUtility.ToJson(updateData);
+        Debug.Log($"PlayerDataManager: Sending update request for player ID: {playerId}, Body: {jsonRequestBody}");
+
+        // --- 2. Create and Send the UnityWebRequest ---
+        string apiPath = ServerConfig.LoadFromFile("Config/ServerConfig.json").GetApiPath();
+        string fullUrl = apiPath + "/update_player_data.php"; // Your PHP script endpoint for updating
+
+        using (UnityWebRequest request = new UnityWebRequest(fullUrl, "POST"))
+        {
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonRequestBody);
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            yield return request.SendWebRequest(); // Wait for the request to complete
+
+            // --- 3. Handle the Response ---
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                LastUpdateMessage = $"Update API Call Failed! Error: {request.error}";
+                Debug.LogError($"PlayerDataManager: {LastUpdateMessage}");
+                IsUpdateSuccessful = false;
+            }
+            else
+            {
+                Debug.Log($"PlayerDataManager: Update API Call Successful! Response: {request.downloadHandler.text}");
+                try
+                {
+                    // Assuming update_player.php returns a simple status response
+                    UpdatePlayerResponse response = JsonUtility.FromJson<UpdatePlayerResponse>(request.downloadHandler.text);
+
+                    if (response.status_code == 0)
+                    {
+                        IsUpdateSuccessful = true;
+                        LastUpdateMessage = "Player data updated successfully.";
+                        Debug.Log("PlayerDataManager: Player data updated successfully on server.");
+
+                        // Optional: If the update was successful, refresh the local CurrentPlayerMainData
+                        // This might be done by immediately calling FetchPlayerData again,
+                        // or by manually updating CurrentPlayerMainData if the response includes the new data.
+                        // For simplicity, we'll just log success here.
+                        // If you want the local data to reflect the change, you might call:
+                        // StartCoroutine(FetchPlayerData(playerId)); // You need a reference to a MonoBehaviour to call StartCoroutine
+                    }
+                    else
+                    {
+                        IsUpdateSuccessful = false;
+                        LastUpdateMessage = $"Server returned an error during update: {response.error_message} (Status Code: {response.status_code})";
+                        Debug.LogError($"PlayerDataManager: {LastUpdateMessage}");
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    LastUpdateMessage = $"Failed to parse update response JSON: {e.Message}";
+                    Debug.LogError($"PlayerDataManager: {LastUpdateMessage}\nRaw Response: {request.downloadHandler.text}");
+                    IsUpdateSuccessful = false;
+                }
+            }
+        }
+    }
+
+    // --- Helper classes for Update Player Response ---
+    [System.Serializable]
+    public class UpdatePlayerResponse
+    {
+        public int status_code;
+        public string error_message;
+        // Your PHP script returns an empty array for player_data on success.
+        // If you remove that, this class works fine. If it still returns it,
+        // you might need to add `public List<PlayerMainData> player_data;` here.
     }
 }

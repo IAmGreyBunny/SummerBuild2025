@@ -1,11 +1,16 @@
 using UnityEngine;
+using UnityEngine.UI;
 // Make sure this is attached to an active GameObject in your scene.
 public class SoundManager : MonoBehaviour
 {
+    public Toggle toggle;
     // This Awake function runs when the script instance is being loaded.
     private void Awake()
     {
         Debug.Log("SoundManager script has started!");
+
+        if (AudioListener.volume == 0) toggle.isOn = false;
+        else toggle.isOn = true;
     }
 
     // This is the function the checkbox should call.

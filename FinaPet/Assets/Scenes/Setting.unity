@@ -520,6 +520,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bcbf5539519ee64fa136063b230a47e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  toggle: {fileID: 505959403}
 --- !u!4 &419582475
 Transform:
   m_ObjectHideFlags: 0
