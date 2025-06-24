@@ -8,38 +8,48 @@ public class PetEntryButton : MonoBehaviour
     public Button entryButton;
     public PetManager petManager; // Assign this in the Inspector
 
-    private void Start()
+    private void OnEnable()
     {
-        PetData pet = petManager.GetPetByType(petTypeToCheck);
-
-        if (pet != null)
+        if (petManager != null)
         {
-            entryButton.interactable = true;
-            entryButton.onClick.AddListener(() =>
-            {
-                PetSession.selectedPet = pet;
-                SceneManager.LoadScene("Pet Interaction");
-            });
+            petManager.OnPetsUpdated.AddListener(RefreshButton);
         }
-        else
+        entryButton.interactable = false;
+    }
+
+    private void OnDisable()
+    {
+        if (petManager != null)
         {
-            entryButton.interactable = false;
+            petManager.OnPetsUpdated.RemoveListener(RefreshButton);
         }
     }
+
     public void RefreshButton()
     {
-        PetData pet = petManager.GetPetByType(petTypeToCheck);
-        entryButton.interactable = (pet != null);
+        // Check if the GameDataManager exists
+        if (GameDataManager.Instance == null)
+        {
+            Debug.LogError("GameDataManager not found!");
+            return;
+        }
 
+        // --- CRITICAL CHANGE ---
+        // Find the pet from the persistent data manager's list.
+        PetData pet = GameDataManager.Instance.ownerPets.Find(p => p.pet_type == petTypeToCheck);
+
+        entryButton.interactable = (pet != null);
         entryButton.onClick.RemoveAllListeners();
+
         if (pet != null)
         {
             entryButton.onClick.AddListener(() =>
             {
-                PetSession.selectedPet = pet;
+                // --- CRITICAL CHANGE ---
+                // Set the selected pet on the persistent data manager.
+                GameDataManager.Instance.selectedPet = pet;
                 SceneManager.LoadScene("Pet Interaction");
             });
         }
     }
-
 }

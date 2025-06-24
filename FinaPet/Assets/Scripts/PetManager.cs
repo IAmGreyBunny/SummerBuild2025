@@ -3,122 +3,132 @@ using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Unity.VisualScripting; // Required for encoding the JSON string
+using UnityEngine.Events;
+using System;
 
 /// <summary>
-/// Manages fetching pet data from the server and spawning them using the PetSpawner.
+/// Fetches pet data from the server, handles server-specific data formats,
+/// and populates the clean data into the GameDataManager.
 /// </summary>
 public class PetManager : MonoBehaviour
 {
-    public int ownerId = 1; // Example ID. This should be set dynamically after a player logs in.
-    public List<PetData> ownerPets = new List<PetData>();
+    public int ownerId = 1;
+    public UnityEvent OnPetsUpdated = new UnityEvent();
 
-
-    // This is called when the script instance is being loaded.
     void Start()
     {
-        // Automatically fetch and spawn pets when the scene starts.
-        if (PlayerAuthSession.IsLoggedIn == true)
+        if (GameDataManager.Instance == null)
         {
-            Debug.Log("Player Logged in: " + PlayerAuthSession.PlayerId);
+            Debug.LogError("FATAL ERROR: GameDataManager is not present in the scene.");
+            return;
+        }
+
+        if (PlayerAuthSession.IsLoggedIn)
+        {
             ownerId = PlayerAuthSession.PlayerId;
         }
         else
         {
-            Debug.LogError("Player not logged in using default: " + ownerId);
+            Debug.LogError("Player not logged in, using default ID: " + ownerId);
         }
 
-        FetchAndSpawnPlayerPets();
+        StartCoroutine(Co_FetchPets());
     }
 
-    /// <summary>
-    /// Public method to initiate the process. Can be called from a UI button or other scripts.
-    /// </summary>
-    public void FetchAndSpawnPlayerPets()
+    private IEnumerator Co_FetchPets()
     {
-        StartCoroutine(Co_FetchAndSpawnPets());
-    }
-
-    /// <summary>
-    /// The coroutine that handles the web request to get pet data.
-    /// </summary>
-    public IEnumerator Co_FetchAndSpawnPets()
-    {
-        // --- 2. Prepare the JSON Request ---
-        // Create a request object to be converted to JSON.
-        GetPetsRequestData requestData = new GetPetsRequestData
-        {
-            owner_id = this.ownerId
-        };
+        var requestData = new GetPetsRequestData { owner_id = this.ownerId };
         string jsonRequestBody = JsonUtility.ToJson(requestData);
-        Debug.Log("Sending Request: " + jsonRequestBody);
+        string fullUrl = ServerConfig.LoadFromFile("Config/ServerConfig.json").GetApiPath() + "/get_pets.php";
 
-        // --- 3. Create and Send the UnityWebRequest ---
-        // Get the API path from your server configuration file.
-        string apiPath = ServerConfig.LoadFromFile("Config/ServerConfig.json").GetApiPath();
-        string fullUrl = apiPath + "/get_pets.php";
-
-        // Using POST, as the PHP script reads from `php://input`
         using (UnityWebRequest request = new UnityWebRequest(fullUrl, "POST"))
         {
-            // Set the body of the request
             byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonRequestBody);
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
-
-            // Set the content type header to specify we're sending JSON
             request.SetRequestHeader("Content-Type", "application/json");
 
-            // Send the request and wait for the response
             yield return request.SendWebRequest();
 
-            // --- 4. Handle the Response ---
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError("API Call Failed! Error: " + request.error);
+                Debug.LogError($"API Call Failed! Error: {request.error}");
             }
             else
             {
                 Debug.Log("API Call Successful! Response: " + request.downloadHandler.text);
-                GetPetsResponseData response = JsonUtility.FromJson<GetPetsResponseData>(request.downloadHandler.text);
 
-                if (response.status_code == 200 || response.status_code == 0)
+                try
                 {
-                    ownerPets = response.pets;
-                    // In PetManager after ownerPets is set:
-                    foreach (var button in FindObjectsOfType<PetEntryButton>())
+                    // --- FIX ---
+                    // Parse the JSON into our DTO that expects strings.
+                    GetPetsResponseData_DTO responseDTO = JsonUtility.FromJson<GetPetsResponseData_DTO>(request.downloadHandler.text);
+
+                    // Check the string status code
+                    if (responseDTO.status_code == "0" || responseDTO.status_code == "200")
                     {
-                        button.RefreshButton();
-                    }
+                        // Create a new, clean list for our final PetData
+                        List<PetData> cleanPetsList = new List<PetData>();
 
+                        // Loop through each pet from the server
+                        foreach (var petDTO in responseDTO.pets)
+                        {
+                            // Convert the string data into a clean PetData object with integers
+                            PetData cleanPet = new PetData
+                            {
+                                pet_id = int.Parse(petDTO.pet_id),
+                                owner_id = int.Parse(petDTO.owner_id),
+                                pet_type = int.Parse(petDTO.pet_type),
+                                hunger = int.Parse(petDTO.hunger),
+                                affection = int.Parse(petDTO.affection)
+                            };
+                            cleanPetsList.Add(cleanPet);
+                        }
+
+                        // Store the final, clean list in the GameDataManager
+                        GameDataManager.Instance.ownerPets = cleanPetsList;
+
+                        Debug.Log("Pet data parsed and updated successfully. Invoking OnPetsUpdated event.");
+                        OnPetsUpdated.Invoke();
+                    }
+                    else
+                    {
+                        Debug.LogError("Server returned an error: " + responseDTO.error_message);
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    Debug.LogError("Failed to load pets. Server error: " + response.error_message);
+                    Debug.LogError($"Failed to parse JSON response. Is the format correct? Error: {e.Message}");
                 }
             }
-
         }
     }
 
-    public PetData GetPetByType(int petType)
+    #region Data Transfer Classes
+    // --- FIX ---
+    // These new DTO (Data Transfer Object) classes match your server's JSON exactly (with strings).
+    [System.Serializable]
+    private class PetData_DTO
     {
-        return ownerPets.Find(p => p.pet_type == petType);
+        public string pet_id;
+        public string owner_id;
+        public string pet_type;
+        public string hunger;
+        public string affection;
+        // The DTO can also include fields you don't use, like last_fed, without causing issues.
+        public string last_fed;
     }
 
-
     [System.Serializable]
-    private class GetPetsRequestData
+    private class GetPetsResponseData_DTO
     {
-        public int owner_id;
-    }
-
-    [System.Serializable]
-    private class GetPetsResponseData
-    {
-        public int status_code;
+        public string status_code;
         public string error_message;
-        public List<PetData> pets;
+        public List<PetData_DTO> pets;
     }
 
+    // This is the original request class, it's still correct.
+    [System.Serializable]
+    private class GetPetsRequestData { public int owner_id; }
+    #endregion
 }

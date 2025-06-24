@@ -48,20 +48,53 @@ public class IndivPetSpawner : MonoBehaviour
         GameObject panelInstance = Instantiate(interactionPanelPrefab, canvas.transform);
         panelInstance.SetActive(false); // hide by default
 
+        // In your IndivPetSpawner.cs Start() method...
+
         AnimalHighlighter highlighter = petInstance.GetComponent<AnimalHighlighter>();
         if (highlighter != null)
         {
             highlighter.interactionPanel = panelInstance;
             highlighter.canvas = canvas;
 
-            highlighter.feedButton = panelInstance.transform.Find("FeedButton").GetComponent<Button>();
-            highlighter.petButton = panelInstance.transform.Find("PetButton").GetComponent<Button>();
+            // --- CORRECTED BUTTON FINDING LOGIC ---
 
-            UnityEngine.Debug.Log("Panel and buttons linked to highlighter");
-        }
-        else
-        {
-            UnityEngine.Debug.LogWarning("AnimalHighlighter not found on spawned pet");
+            // Find the Feed Button using its full path
+            Transform feedButtonTransform = panelInstance.transform.Find("Button Container/FeedButton");
+            if (feedButtonTransform != null)
+            {
+                highlighter.feedButton = feedButtonTransform.GetComponent<Button>();
+                UnityEngine.Debug.Log("Successfully found and assigned FeedButton.");
+            }
+            else
+            {
+                UnityEngine.Debug.LogError("ERROR: Could not find 'FeedButton' at path 'Button Container/FeedButton'!");
+            }
+
+            // Find the Pet Button using its full path
+            Transform petButtonTransform = panelInstance.transform.Find("Button Container/PetButton");
+            if (petButtonTransform != null)
+            {
+                highlighter.petButton = petButtonTransform.GetComponent<Button>();
+                UnityEngine.Debug.Log("Successfully found and assigned PetButton.");
+            }
+            else
+            {
+                UnityEngine.Debug.LogError("ERROR: Could not find 'PetButton' at path 'Button Container/PetButton'!");
+            }
+
+            // Do the same for your Close Button
+            // Assuming it's also inside "Button Container" and named "CloseButton"
+            Transform closeButtonTransform = panelInstance.transform.Find("Button Container/CloseButton");
+            if (closeButtonTransform != null)
+            {
+                Button closeButton = closeButtonTransform.GetComponent<Button>();
+                closeButton.onClick.AddListener(() => panelInstance.SetActive(false));
+                UnityEngine.Debug.Log("Close button linked.");
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning("Could not find 'CloseButton' at path 'Button Container/CloseButton'!");
+            }
         }
     }
 }
