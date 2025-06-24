@@ -9,59 +9,14 @@ EditorBuildSettings:
     path: Assets/Scenes/Home.unity
     guid: 2e16504c96b455148adfb84c0718e933
   - enabled: 0
-    path: Assets/Scenes/Old my pet.unity
+    path: Assets/Scenes/My Pets.unity
     guid: 8ca2d7c275431904e84c03837f963401
-  - enabled: 0
-    path: Assets/Scenes/Inventory.unity
-    guid: c2157f3a73b698247899fdae3b44c9b6
   - enabled: 1
     path: Assets/Scenes/Inventory.unity
     guid: c2157f3a73b698247899fdae3b44c9b6
-  - enabled: 1
-    path: Assets/Scenes/My Collection.unity
-    guid: 33476594ad1873d42b6d141ecc3210fa
-  - enabled: 0
-    path: Assets/Scenes/Auth Page.unity
-    guid: a7b87aaad8f07164d87175d787b06158
-  - enabled: 1
-    path: Assets/Scenes/testingScene.unity
-    guid: 62c7816fc8fc02b4a9674501b619e104
-  - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
-    guid: cd826b5e495fbb14797d3bb1bc3aa370
-  - enabled: 1
-    path: Assets/Scenes/PetScene.unity
-    guid: 84dd27a57f2fb8744a01b63d386f5edd
-  - enabled: 1
-    path: Assets/Scenes/Add Expense.unity
-    guid: 74760e862d76e6d4aa09331eb00df43a
-  - enabled: 1
-    path: Assets/Scenes/AuthPage.unity
-    guid: a9e8384af94f1c540895c0e9ddd61ee3
-  - enabled: 1
-    path: Assets/Scenes/DiaryPage.unity
-    guid: 9d5eb3ce78ca48840af3a2d3692eb409
-  - enabled: 1
-    path: Assets/Scenes/Intro Video.unity
-    guid: 7671531a9180ced4da17a07400dd9477
   - enabled: 1
     path: Assets/Scenes/My Pet.unity
     guid: ce9cb14a697924144b986ff4974f26f7
-  - enabled: 1
-    path: Assets/Scenes/My Profile.unity
-    guid: ae3293e5507dd914f852e1ce30f5b0d5
-  - enabled: 1
-    path: Assets/Scenes/Pet Interaction.unity
-    guid: 924a5e3666efb454bbadbeef81fde78d
-  - enabled: 1
-    path: Assets/Scenes/Saving Target.unity
-    guid: 31098591c2a901c4c9fbad004c42b675
-  - enabled: 1
-    path: Assets/Scenes/Setting.unity
-    guid: ff3e61a7ad3297144bf6a0bb7f909cbd
-  - enabled: 1
-    path: Assets/Scenes/Shop.unity
-    guid: 244a38a86aa8efd4babf74bcfcd4baf1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
