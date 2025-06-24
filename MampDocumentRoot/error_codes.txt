@@ -12,3 +12,4 @@
 11: Get Inventory Query Failed
 12: Get Player Data Query Failed
 13: Update Pet Query Failed
+18: Drop Pet Query Failed
