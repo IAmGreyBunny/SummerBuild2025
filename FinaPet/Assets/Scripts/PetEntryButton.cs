@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class PetEntryButton : MonoBehaviour
 {
+    public SceneChangeButtonHandler sceneChange;
     public int petTypeToCheck;
     public Button entryButton;
     public PetManager petManager; // Assign this in the Inspector
@@ -48,7 +49,8 @@ public class PetEntryButton : MonoBehaviour
                 // --- CRITICAL CHANGE ---
                 // Set the selected pet on the persistent data manager.
                 GameDataManager.Instance.selectedPet = pet;
-                SceneManager.LoadScene("Pet Interaction");
+                //SceneManager.LoadScene("Pet Interaction");
+                sceneChange.PerformSceneChange();
             });
         }
     }

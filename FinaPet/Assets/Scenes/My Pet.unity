@@ -1972,6 +1972,7 @@ GameObject:
   - component: {fileID: 1339949513}
   - component: {fileID: 1339949512}
   - component: {fileID: 1339949511}
+  - component: {fileID: 1339949515}
   m_Layer: 5
   m_Name: InteractionButton
   m_TagString: Untagged
@@ -2012,6 +2013,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0c5b6ad868f3bf41b5a6adb5065c1ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneChange: {fileID: 1339949515}
   petTypeToCheck: 0
   entryButton: {fileID: 1339949512}
   petManager: {fileID: 1373401355}
@@ -2097,6 +2099,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1339949509}
   m_CullTransparentMesh: 1
+--- !u!114 &1339949515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1339949509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afe1597e4dbc5ae48922a67aefc50fcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneNameToLoad: Pet Interaction
+  isAdditive: 0
 --- !u!1 &1373401354
 GameObject:
   m_ObjectHideFlags: 0

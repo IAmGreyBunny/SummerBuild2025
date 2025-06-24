@@ -35,6 +35,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Pet Interaction.unity
     guid: 924a5e3666efb454bbadbeef81fde78d
+  - enabled: 1
+    path: Assets/Scenes/My Pet.unity
+    guid: ce9cb14a697924144b986ff4974f26f7
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
