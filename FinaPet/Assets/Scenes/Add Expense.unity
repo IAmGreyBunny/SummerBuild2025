@@ -1008,8 +1008,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -121.42883}
-  m_SizeDelta: {x: -252.05, y: -400.16}
+  m_AnchoredPosition: {x: 0, y: -175}
+  m_SizeDelta: {x: -252.05, y: -350}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &308702110
 MonoBehaviour:
@@ -1405,7 +1405,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.002467016, y: 30.259699}
+  m_AnchoredPosition: {x: -0.002467016, y: 40}
   m_SizeDelta: {x: 840.7983, y: 278.7157}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &586377992
@@ -1428,8 +1428,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: You can only submit your daily expenses once. Are you sure you want to
+  m_text: 'You can only submit your daily expenses once. Are you sure you want to
     submit it now?
+
+    you will earn XX coins'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c1857c23e64c8d459cb7aaa8ac46d7d, type: 2}
   m_sharedMaterial: {fileID: 190191317364896326, guid: 3c1857c23e64c8d459cb7aaa8ac46d7d, type: 2}
@@ -2126,6 +2128,7 @@ MonoBehaviour:
   expenseInputField: {fileID: 1200130479}
   submitButton: {fileID: 1894252153}
   confirmationPopup: {fileID: 2031415413}
+  confirmSubmitText: {fileID: 586377992}
   yesButton: {fileID: 564565921}
   noButton: {fileID: 1085176770}
   statusText: {fileID: 1462418066}
@@ -2722,9 +2725,9 @@ RectTransform:
   - {fileID: 1894252150}
   m_Father: {fileID: 404568994}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 700, y: -341.161}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1400, y: 227.44067}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1115154060
@@ -3681,9 +3684,9 @@ RectTransform:
   - {fileID: 7869374558802728955}
   m_Father: {fileID: 404568994}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 700, y: -113.72034}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1400, y: 227.44067}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1507898520
@@ -4356,8 +4359,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000061035156}
-  m_SizeDelta: {x: -1015.4191, y: -573.7611}
+  m_AnchoredPosition: {x: 0, y: 33.440247}
+  m_SizeDelta: {x: -1015.4191, y: -506.8805}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2031415415
 MonoBehaviour:
@@ -5147,9 +5150,9 @@ RectTransform:
   - {fileID: 2790399824430210025}
   m_Father: {fileID: 1507898519}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 700, y: -113.72}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1400, y: 227.44}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8072823470413419820
