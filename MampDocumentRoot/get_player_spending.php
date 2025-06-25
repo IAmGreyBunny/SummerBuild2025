@@ -2,17 +2,16 @@
 header('Content-Type: application/json');
 require 'db_connect.php';
 
-// Default response structure
+// --- Default Response Structure ---
 $response = [
     "status_code" => 0,
     "error_message" => "",
-    "spending_records" => [] // Ensure this is always an array
+    "spending_records" => [] // Initialize as an empty array to prevent errors
 ];
 
-// Parse the JSON input from the request
+// --- Input Validation ---
 $json = json_decode(file_get_contents('php://input'), true);
 
-// --- Input Validation ---
 if ($json === null) {
     $response["status_code"] = 7;
     $response["error_message"] = "Invalid JSON provided.";
@@ -28,31 +27,27 @@ if (!$player_id) {
     exit();
 }
 
-// --- Database Query ---
-// Use prepared statements to prevent SQL injection vulnerabilities
-$getSpendingQuery = "SELECT daily_spending, record_date FROM player_daily_tracker WHERE player_id = ?";
-$stmt = mysqli_prepare($con, $getSpendingQuery);
+// --- Database Query (Refactored to match your style) ---
+// This query now uses the direct mysqli_query method for consistency with your other scripts.
+$getSpendingQuery = "SELECT daily_spending, record_date FROM player_daily_tracker WHERE player_id = '" . $player_id . "';";
+$getSpendingQueryResult = mysqli_query($con, $getSpendingQuery);
 
-if ($stmt) {
-    mysqli_stmt_bind_param($stmt, "i", $player_id);
-    
-    if (mysqli_stmt_execute($stmt)) {
-        $result = mysqli_stmt_get_result($stmt);
-        $records = [];
-        while ($row = mysqli_fetch_assoc($result)) {
-            $records[] = $row;
-        }
-        $response["spending_records"] = $records;
-    } else {
-        $response["status_code"] = 35; // Assigning a new, unused error code
-        $response["error_message"] = "Get Player Spending Query Failed: " . mysqli_stmt_error($stmt);
-    }
-    mysqli_stmt_close($stmt);
-} else {
-    $response["status_code"] = 36; // Assigning a new, unused error code
-    $response["error_message"] = "Failed to prepare the database statement for fetching spending.";
+if (!$getSpendingQueryResult) {
+    $response["status_code"] = 35; // New, non-conflicting error code
+    $response["error_message"] = "Get Player Spending Query Failed";
+    echo json_encode($response);
+    exit();
 }
 
+// --- Data Collection ---
+// Loop through the results and add them to the response array.
+$records = [];
+while ($row = mysqli_fetch_assoc($getSpendingQueryResult)) {
+    $records[] = $row;
+}
+$response["spending_records"] = $records;
+
+// --- Final Output ---
 mysqli_close($con);
 echo json_encode($response);
 ?>
