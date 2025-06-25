@@ -166,7 +166,8 @@ public class RegistrationFormController : MonoBehaviour
             {
                 Debug.Log("Login Successful");
                 PlayerAuthSession.StartSession(loginResponse.player_data.username, loginResponse.player_data.player_id);
-                PlayerDataManager.FetchPlayerData(loginResponse.player_data.player_id);
+                // Wait for the data fetch to complete
+                yield return PlayerDataManager.FetchPlayerData(loginResponse.player_data.player_id);
             }
             else
             {

@@ -699,7 +699,6 @@ MonoBehaviour:
   femaleToggle: {fileID: 8861055300527770536}
   maleToggle: {fileID: 8861055301885306826}
   playerAvatarUpdater: {fileID: 1299312314}
-  debugPlayerId: 10
 --- !u!4 &254895465
 Transform:
   m_ObjectHideFlags: 0
@@ -3323,7 +3322,6 @@ MonoBehaviour:
   avatarSprites:
   - {fileID: -8771350949733757393, guid: 2bc1befcc149c734d8476a184527868d, type: 3}
   - {fileID: 431512648808933374, guid: e7a46e36bb7cbec4ca2a2d6007a735e1, type: 3}
-  debugPlayerId: 10
 --- !u!1 &1315481864
 GameObject:
   m_ObjectHideFlags: 0
@@ -5309,20 +5307,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4945110945592779144}
   m_CullTransparentMesh: 1
---- !u!114 &1870700272975631599
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4945110945592779144}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afe1597e4dbc5ae48922a67aefc50fcc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneNameToLoad: 
-  isAdditive: 0
 --- !u!114 &1870700273765955713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5652,6 +5636,7 @@ GameObject:
   - component: {fileID: 7572377754113424261}
   - component: {fileID: 1870700273765955713}
   - component: {fileID: 8861055301885306826}
+  - component: {fileID: 8861055301885306827}
   m_Layer: 5
   m_Name: Toggle
   m_TagString: Untagged
@@ -5670,8 +5655,8 @@ GameObject:
   - component: {fileID: 8861055300527770535}
   - component: {fileID: 48694165120529084}
   - component: {fileID: 7572377752250865643}
-  - component: {fileID: 1870700272975631599}
   - component: {fileID: 8861055300527770536}
+  - component: {fileID: 8861055300527770537}
   m_Layer: 5
   m_Name: Toggle
   m_TagString: Untagged
@@ -6143,6 +6128,35 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!114 &8861055300527770537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4945110945592779144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 254895464}
+          m_TargetAssemblyTypeName: ProfileAvatarSelector, Assembly-CSharp
+          m_MethodName: OnFemaleToggleClicked
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!224 &8861055301885306825
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6213,6 +6227,35 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &8861055301885306827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4945110944235638246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 254895464}
+          m_TargetAssemblyTypeName: ProfileAvatarSelector, Assembly-CSharp
+          m_MethodName: OnMaleToggleClicked
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
