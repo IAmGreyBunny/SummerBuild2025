@@ -24,3 +24,8 @@
 23: Update Pet Affection Query Failed
 24: pet_type value not provided
 25: Insert Pet Query Failed
+26: monthly_income value not provided
+27: Get Player Tracker Setting Query Failed
+28: Update Player Tracker Setting Query Failed
+29: daily_spending value not provided
+30: Insert Player Daily Tracker Query Failed
