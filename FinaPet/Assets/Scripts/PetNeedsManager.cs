@@ -1,12 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
+using UnityEngine.Networking;
+using System.Text;
 
 /// <summary>
 /// Manages the pet's hunger UI slider and handles the "run away" logic.
-/// It initializes the slider's value from GameDataManager and provides methods
-/// for other scripts to interact with the hunger value. It no longer
-/// decreases hunger over time on its own.
+/// When hunger reaches zero, it shows a popup and provides a method to
+/// delete the pet from the database before returning to the previous scene.
 /// </summary>
 public class PetNeedsManager : MonoBehaviour
 {
@@ -38,13 +40,13 @@ public class PetNeedsManager : MonoBehaviour
 
             Debug.Log($"PetNeedsManager: Hunger slider initialized with value: {initialHunger}");
 
-            // Immediately check if the pet should have already run away based on initial hunger.
+            // Immediately check if the pet should have already run away.
             CheckHungerStatus();
         }
         else
         {
             // Fallback for testing or if data is missing.
-            Debug.LogWarning("PetNeedsManager: No pet data found in GameDataManager. Initializing hunger to a default of 100.");
+            Debug.LogWarning("PetNeedsManager: No pet data found. Initializing hunger to a default of 100.");
             hungerSlider.minValue = 0;
             hungerSlider.maxValue = 100;
             hungerSlider.value = 100;
@@ -66,11 +68,12 @@ public class PetNeedsManager : MonoBehaviour
 
     /// <summary>
     /// The sequence of events when a pet's hunger reaches zero.
+    /// This now only handles the visual part: disabling the pet and showing the popup.
     /// </summary>
     private void HandlePetRunAway()
     {
         petHasRunAway = true;
-        Debug.Log("Pet has run away due to hunger!");
+        Debug.Log("Pet has run away due to hunger! Showing runaway popup.");
 
         // Find and disable the pet's GameObject.
         PetDetails petObject = FindObjectOfType<PetDetails>();
@@ -87,45 +90,82 @@ public class PetNeedsManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Public method that can be linked to a UI button on the runaway popup
-    /// to return the player to the previous scene.
+    /// This is the new public method that your "Back" button on the popup should call.
+    /// It starts the process of deleting the pet from the database and then returning.
     /// </summary>
-    public void GoToPreviousScene()
+    public void InitiateDeleteAndReturn()
     {
-        // Consider using your SceneController singleton if you have one for history management
-        // For now, this will load the "My Pets" scene directly.
-        SceneManager.LoadScene("My Pets");
+        StartCoroutine(Co_DeletePetAndReturn());
     }
 
-    // --- Public Methods for other scripts (like FeedManager) ---
-
     /// <summary>
-    /// Gets the current integer value of the hunger slider.
+    /// This Coroutine first sends a request to delete the pet from the database,
+    /// waits for the server to respond, and then loads the previous scene.
     /// </summary>
+    private IEnumerator Co_DeletePetAndReturn()
+    {
+        if (GameDataManager.Instance == null || GameDataManager.Instance.selectedPet == null)
+        {
+            Debug.LogError("Cannot delete pet: No pet data found in GameDataManager.");
+            // Still go back to the previous scene even if we can't delete.
+            SceneManager.LoadScene("My Pets");
+            yield break;
+        }
+
+        int petIdToDelete = GameDataManager.Instance.selectedPet.pet_id;
+        var requestData = new DeletePetRequest { pet_id = petIdToDelete };
+        string jsonRequestBody = JsonUtility.ToJson(requestData);
+        Debug.Log("Sending delete request to server: " + jsonRequestBody);
+
+        string fullUrl = ServerConfig.LoadFromFile("Config/ServerConfig.json").GetApiPath() + "/delete_pet.php";
+
+        using (UnityWebRequest request = new UnityWebRequest(fullUrl, "POST"))
+        {
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonRequestBody);
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            // Wait for the request to complete
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError($"Delete Pet API Call Failed! Error: {request.error}");
+            }
+            else
+            {
+                Debug.Log("Delete Pet Response: " + request.downloadHandler.text);
+            }
+        }
+
+        // After the web request is done, load the scene.
+        SceneManager.LoadScene("My Pet");
+    }
+
+    // --- Public Methods for other scripts (like FeedManager) to use ---
+
     public int GetCurrentHunger()
     {
         return (int)hungerSlider.value;
     }
 
-    /// <summary>
-    /// Sets the hunger slider to a new value, clamped between its min and max.
-    /// After setting, it re-checks the hunger status.
-    /// </summary>
-    /// <param name="newHunger">The new hunger value.</param>
     public void SetHunger(int newHunger)
     {
         if (petHasRunAway) return;
-
         hungerSlider.value = Mathf.Clamp(newHunger, hungerSlider.minValue, hungerSlider.maxValue);
         CheckHungerStatus(); // Check if this change caused the pet to run away.
     }
 
-    /// <summary>
-    /// Checks if the hunger slider is at its maximum value.
-    /// </summary>
-    /// <returns>True if hunger is full, false otherwise.</returns>
     public bool IsHungerFull()
     {
         return hungerSlider.value >= hungerSlider.maxValue;
+    }
+
+    // A small helper class to structure the JSON request for deletion.
+    [System.Serializable]
+    private class DeletePetRequest
+    {
+        public int pet_id;
     }
 }
