@@ -19,7 +19,7 @@ if ($json === null) {
 }
 
 $owner_id = $json['owner_id'] ?? '';
-if (!$owner_id) {
+if ($owner_id === null) {
 	echo json_encode([
 		"status_code" => 10,
 		"error_message" => "player_id not provided"
@@ -28,7 +28,7 @@ if (!$owner_id) {
 }
 
 $pet_type = $json['pet_type'] ?? '';
-if (!$pet_type) {
+if ($pet_type === null) {
 	echo json_encode([
 		"status_code" => 24,
 		"error_message" => "pet_type value not provided"
@@ -36,7 +36,7 @@ if (!$pet_type) {
 	exit();
 }
 
-// Query for player_data
+// Query
 $insertPetQuery = "INSERT INTO pets (owner_id, pet_type) VALUES ('" . $owner_id . "', '" . $pet_type . "');";
 $insertPetQueryResult = mysqli_query($con, $insertPetQuery);
 
