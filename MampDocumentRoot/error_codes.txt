@@ -29,3 +29,7 @@
 28: Update Player Tracker Setting Query Failed
 29: daily_spending value not provided
 30: Insert Player Daily Tracker Query Failed
+31: item_id not provided
+32: quantity value not provided
+33: Upsert Inventory Query Failed
+34: Failed to prepare the database statement
