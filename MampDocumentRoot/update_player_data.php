@@ -27,7 +27,7 @@ if (!$player_id) {
 	exit();
 }
 $coin = $json['coin'] ?? '';
-if (!$coin) {
+if ($coin === null) {
 	echo json_encode([
 		"status_code" => 14,
 		"error_message" => "coin value not provided"
@@ -35,7 +35,7 @@ if (!$coin) {
 	exit();
 }
 $avatar_sprite_id = $json['avatar_sprite_id'] ?? '';
-if (!$coin) {
+if ($avatar_sprite_id === null) {
 	echo json_encode([
 		"status_code" => 15,
 		"error_message" => "avatar_sprite_id value not provided"
