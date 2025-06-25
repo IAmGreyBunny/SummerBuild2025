@@ -158,7 +158,7 @@ public class InventoryController : MonoBehaviour
                             {
                                 GameObject currentInventoryCard = Instantiate(inventoryItemCardPrefab, inventoryItemParent);
                                 // Find the TextMeshPro component for the item name and price
-                                currentInventoryCard.transform.Find("Box Body").Find("Label").GetComponent<TMP_Text>().text = $"{ItemHelper.getItemNameFromId(item.item_id)} \n Quantity: ${item.quantity}";
+                                currentInventoryCard.transform.Find("Box Body").Find("Label").GetComponent<TMP_Text>().text = $"{ItemHelper.getItemNameFromId(item.item_id)} \n Quantity: {item.quantity}";
 
                                 // --- NEW: Set the item image ---
                                 // Find the Image component using the specified relative path.
