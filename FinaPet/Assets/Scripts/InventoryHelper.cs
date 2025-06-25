@@ -49,7 +49,7 @@ public static class InventoryHelper
 
     [Serializable]
     private class InventoryJsonPayload
-{
+    {
         public int player_id;
         public int item_id;
         public int quantity;

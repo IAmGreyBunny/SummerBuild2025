@@ -295,42 +295,29 @@ public class InventoryAndFeedManager : MonoBehaviour
             }
         }
     }
+    // --- Data Structures for InventoryAndFeedManager specific responses ---
+    // These classes are defined here, but if you have a shared 'DataModels.cs' or similar file,
+    // it's better to move them there.
+
+    /// <summary>
+    /// Represents the JSON structure for a simple backend response (e.g., for updates).
+    /// </summary>
+    [System.Serializable]
+    private class SimpleBackendResponse
+    {
+        public int status_code;
+        public string error_message;
+    }
+
+    /// <summary>
+    /// Data class to deserialize the JSON response from get_player_inventory.php.
+    /// </summary>
+    [System.Serializable]
+    private class GetInventoryResponse
+    {
+        public int status_code; //
+        public string error_message; //
+        public InventoryItem[] items; //
+    }
 }
 
-// --- Data Structures for InventoryAndFeedManager specific responses ---
-// These classes are defined here, but if you have a shared 'DataModels.cs' or similar file,
-// it's better to move them there.
-
-/// <summary>
-/// Represents the JSON structure for a simple backend response (e.g., for updates).
-/// </summary>
-[System.Serializable]
-public class SimpleBackendResponse
-{
-    public int status_code;
-    public string error_message;
-}
-
-/// <summary>
-/// Data class to deserialize the JSON response from get_player_inventory.php.
-/// </summary>
-[System.Serializable]
-public class GetInventoryResponse
-{
-    public int status_code; //
-    public string error_message; //
-    public InventoryItem[] items; //
-}
-
-/// <summary>
-/// Represents a single item within the player's inventory.
-/// Fields derived from 'inventory' and 'items' tables join in get_player_inventory.php.
-/// </summary>
-[System.Serializable]
-public class InventoryItem
-{
-    public int item_id; //
-    public int quantity; // Assumed field in 'inventory' table for item count
-    public int inventory_id;
-    public int player_id;
-}
