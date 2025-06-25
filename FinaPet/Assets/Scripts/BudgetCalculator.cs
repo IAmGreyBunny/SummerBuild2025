@@ -1,77 +1,88 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
-/// <summary>
-/// Handles the UI logic for the budgeting page, including calculation
-/// and triggering the data submission process.
-/// </summary>
 public class BudgetCalculator : MonoBehaviour
 {
     [Header("UI Elements")]
-    [Tooltip("The input field for the user's monthly allowance.")]
     public TMP_InputField monthlyAllowanceInputField;
-    [Tooltip("The text element to display the calculated 70% budget.")]
     public TMP_Text monthlyBudgetText;
-    [Tooltip("The button to submit the data to the server.")]
     public Button submitButton;
-    public int debugId;
+    public GameObject loadingIndicator;
 
     [Header("Calculation Settings")]
     [SerializeField] private float budgetPercentage = 0.70f;
 
-    // We will get the player ID from the authentication session.
-    private int playerID;
+    [Header("Testing")]
+    [Tooltip("A fallback ID to use when not logged in.")]
+    public int debugID = 1;
 
-    /// <summary>
-    /// This method is called when the script instance is being loaded.
-    /// </summary>
+    private int playerID;
+    private bool isSubmitting = false;
+
     void Start()
     {
-        // --- Dependency and Session Check ---
-        // Ensure the manager for sending data exists in the scene.
+        monthlyAllowanceInputField.interactable = false;
+        submitButton.interactable = false;
+        if (loadingIndicator != null) loadingIndicator.SetActive(true);
+
         if (AllowanceDataManager.Instance == null)
         {
-            Debug.LogError("FATAL ERROR: PlayerTrackerManager is not present in the scene.");
-            // Disable interaction if the manager is missing.
-            submitButton.interactable = false;
-            monthlyAllowanceInputField.interactable = false;
+            Debug.LogError("FATAL ERROR: AllowanceDataManager is not present.");
+            if (loadingIndicator != null) loadingIndicator.SetActive(false);
             return;
         }
 
-        // Get Player ID from your session manager, just like in PetManager.
         if (PlayerAuthSession.IsLoggedIn)
         {
             playerID = PlayerAuthSession.PlayerId;
         }
         else
         {
-            playerID = debugId;
-            // If the player is not logged in, disable the functionality.
-            //Debug.LogError("Player not logged in. Budget submission will be disabled.");
-            //submitButton.interactable = false;
-            //monthlyAllowanceInputField.interactable = false;
-            //return;
+            playerID = debugID;
+            Debug.LogWarning($"Player not logged in. Using Debug ID: {playerID}");
         }
 
-        // --- UI Setup ---
-        // Add listeners for real-time calculation and button click
+        StartCoroutine(LoadInitialData());
         monthlyAllowanceInputField.onValueChanged.AddListener(CalculateAndDisplayBudget);
         submitButton.onClick.AddListener(OnSubmitButtonPressed);
-
-        // Clear the budget text at the start
-        monthlyBudgetText.text = "0.00";
     }
 
-    /// <summary>
-    /// Calculates the budget based on the input value and updates the display text.
-    /// </summary>
+    private IEnumerator LoadInitialData()
+    {
+        float loadedIncome = -1f;
+        yield return StartCoroutine(AllowanceDataManager.Instance.Co_GetMonthlyIncome(
+            playerID,
+            result => { loadedIncome = result; }
+        ));
+
+        if (loadingIndicator != null) loadingIndicator.SetActive(false);
+        monthlyAllowanceInputField.interactable = true;
+        submitButton.interactable = true;
+
+        if (loadedIncome > 0)
+        {
+            // Set the text for the input field
+            string incomeText = loadedIncome.ToString("F2");
+            monthlyAllowanceInputField.text = incomeText;
+
+            // --- THIS IS THE FIX ---
+            // Manually call the calculation function to update the second box
+            CalculateAndDisplayBudget(incomeText);
+        }
+        else
+        {
+            monthlyAllowanceInputField.text = "";
+            monthlyBudgetText.text = "0.00";
+        }
+    }
+
     public void CalculateAndDisplayBudget(string inputValue)
     {
         if (float.TryParse(inputValue, out float allowance))
         {
-            float calculatedBudget = allowance * budgetPercentage;
-            monthlyBudgetText.text = calculatedBudget.ToString("F2");
+            monthlyBudgetText.text = (allowance * budgetPercentage).ToString("F2");
         }
         else
         {
@@ -79,32 +90,32 @@ public class BudgetCalculator : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Called when the submit button is pressed.
-    /// </summary>
     public void OnSubmitButtonPressed()
     {
-        // Validate the input before sending.
+        if (isSubmitting) return;
         if (float.TryParse(monthlyAllowanceInputField.text, out float allowanceValue))
         {
-            Debug.Log($"Submitting allowance: {allowanceValue} for player ID: {playerID}");
-            // Start the coroutine on the PlayerTrackerManager to send the data.
-            StartCoroutine(AllowanceDataManager.Instance.Co_UpdateMonthlyIncome(playerID, allowanceValue));
-
-            // Optional: Provide user feedback, e.g., disable the button while submitting.
-            submitButton.interactable = false;
-            // You can re-enable it after the coroutine finishes.
+            StartCoroutine(SubmitData(allowanceValue));
         }
         else
         {
             Debug.LogError("Invalid monthly allowance input. Cannot submit.");
-            // Optionally, show a UI error message to the user here.
         }
+    }
+
+    private IEnumerator SubmitData(float allowance)
+    {
+        isSubmitting = true;
+        submitButton.interactable = false;
+        if (loadingIndicator != null) loadingIndicator.SetActive(true);
+        yield return StartCoroutine(AllowanceDataManager.Instance.Co_UpdateMonthlyIncome(playerID, allowance));
+        if (loadingIndicator != null) loadingIndicator.SetActive(false);
+        submitButton.interactable = true;
+        isSubmitting = false;
     }
 
     void OnDestroy()
     {
-        // Clean up listeners to prevent memory leaks.
         if (monthlyAllowanceInputField != null) monthlyAllowanceInputField.onValueChanged.RemoveAllListeners();
         if (submitButton != null) submitButton.onClick.RemoveAllListeners();
     }
