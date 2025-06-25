@@ -17,3 +17,8 @@
 16: Update Player_data Query Failed
 17: pet_id value not provided
 18: Drop Pet Query Failed
+19: hunger value not provided
+20: last_fed value not provided
+21: Update Pet Hunger Query Failed
+22: affection value not provided
+23: Update Pet Affection Query Failed
