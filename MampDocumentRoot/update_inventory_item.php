@@ -50,7 +50,7 @@ if ($quantity === null) {
 // 1. INSERT a new row if the (player_id, item_id) combination does not exist.
 // 2. UPDATE the existing row's quantity if the combination already exists.
 $upsertQuery = "INSERT INTO inventory (player_id, item_id, quantity) VALUES (?, ?, ?)
-                ON DUPLICATE KEY UPDATE quantity = VALUES(quantity)";
+                ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)";
                 
 // Note: We use `quantity = VALUES(quantity)` instead of `quantity = ?`.
 // This tells MySQL to use the 'quantity' value from the INSERT part of the statement for the update.
