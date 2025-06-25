@@ -40,7 +40,7 @@ if($monthly_income === null)
 }
 
 //Query PlayerTrackerSetting
-$updatePlayerTrackerSettingQuery = "UPDATE player_tracker_setting SET monthly_income = '" . $monthly_income . "' WHERE player_id = '" . $player_id . "';";
+$updatePlayerTrackerSettingQuery = "UPDATE player_tracker_setting SET monthly_income = '" . $monthly_income . "' WHERE player_id = " . $player_id . ";";
 $updatePlayerTrackerSettingQueryResult = mysqli_query($con,$updatePlayerTrackerSettingQuery);
 
 if (!$updatePlayerTrackerSettingQueryResult) {
