@@ -637,7 +637,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryItemCardPrefab: {fileID: 3790250892909928985, guid: c7e4afd7b02ec3b4f8ed1f5c034ad7bb, type: 3}
   inventoryItemParent: {fileID: 250388120}
-  itemSpriteMappings: []
+  itemSpriteMappings:
+  - itemId: 1
+    itemSprite: {fileID: 3920547696042853087, guid: e61a910a2529a8b41b92b06793888e83, type: 3}
+  - itemId: 2
+    itemSprite: {fileID: 1497166947140476013, guid: a2aac24349bc4b84bab3f970b3511e36, type: 3}
+  - itemId: 3
+    itemSprite: {fileID: 0}
+  - itemId: 4
+    itemSprite: {fileID: 6188544173058632022, guid: e22d84ec69c448b4cbaae9d979c6b410, type: 3}
   itemImageRelativePath: Box Body/Image
 --- !u!1 &637869139
 GameObject:
