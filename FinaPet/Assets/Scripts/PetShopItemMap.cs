@@ -4,7 +4,7 @@ using UnityEngine;
 public class PetShopItemMap
 {
     //<item_id,pet_type>
-    Dictionary<int, int> petShopDictionary = new Dictionary<int, int>
+    static Dictionary<int, int> petShopDictionary = new Dictionary<int, int>
     {
         [2] = 0,
         [3] = 1,
@@ -12,7 +12,7 @@ public class PetShopItemMap
     };
     
 
-    public int GetPetTypeFromItemId(int itemId)
+    public static int GetPetTypeFromItemId(int itemId)
     {
         if(petShopDictionary.ContainsKey(itemId))
         {

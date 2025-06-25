@@ -18,6 +18,9 @@ public class ShopItemController : MonoBehaviour
             {
                 // Code to create pet
                 Debug.Log("Pet purchased");
+                int pet_type = PetShopItemMap.GetPetTypeFromItemId(shopItem.item_id);
+                int owner_id = PlayerAuthSession.PlayerId;
+                StartCoroutine(PetDatabaseHelper.InsertPetToDatabase(owner_id,pet_type));
             }
             StartCoroutine(PlayerDataManager.UpdatePlayerDataOnServer(
                 PlayerDataManager.CurrentPlayerMainData.player_id,
