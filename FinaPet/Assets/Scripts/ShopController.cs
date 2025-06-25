@@ -5,7 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI; // Required for Image component
-using System.IO; // Required for File.Exists and File.ReadAllText in ServerConfig context
+using System.IO;
+using JetBrains.Annotations; // Required for File.Exists and File.ReadAllText in ServerConfig context
 
 public class ShopController : MonoBehaviour
 {
@@ -208,5 +209,14 @@ public class ShopController : MonoBehaviour
         public int status_code; //
         public string error_message; //
         public ShopItem[] items; //
+    }
+
+    public GameObject moneyLabel;
+    private void Update()
+    {
+        if(moneyLabel.GetComponent<TMP_Text>().text != "$"+PlayerDataManager.CurrentPlayerMainData.coin.ToString())
+        {
+            moneyLabel.GetComponent<TMP_Text>().text = "$"+PlayerDataManager.CurrentPlayerMainData.coin.ToString();
+        }
     }
 }
