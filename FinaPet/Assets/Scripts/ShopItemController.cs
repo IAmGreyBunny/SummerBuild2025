@@ -13,6 +13,10 @@ public class ShopItemController : MonoBehaviour
             {
                 // Code to add into inventory
                 Debug.Log("Consumable purchased");
+                int player_id = PlayerAuthSession.PlayerId;
+                int item_id = shopItem.item_id;
+                int item_quantity = 1;
+                StartCoroutine(InventoryHelper.UpdateInventoryItem(player_id,item_id,item_quantity));
             }
             else if(shopItem.item_type == "pet")
             {
