@@ -44,6 +44,8 @@ public class BudgetCalculator : MonoBehaviour
             Debug.LogWarning($"Player not logged in. Using Debug ID: {playerID}");
         }
 
+        Debug.Log($"BudgetCalculator: Using Player ID: {playerID} for data load.");
+
         StartCoroutine(LoadInitialData());
         monthlyAllowanceInputField.onValueChanged.AddListener(CalculateAndDisplayBudget);
         submitButton.onClick.AddListener(OnSubmitButtonPressed);
