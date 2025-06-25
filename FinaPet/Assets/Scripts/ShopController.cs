@@ -145,6 +145,7 @@ public class ShopController : MonoBehaviour
                         GameObject currentShopCard = Instantiate(shopItemCardPrefab, shopItemParent);
                         // Find the TextMeshPro component for the item name and price
                         currentShopCard.transform.Find("Box Body").Find("Label").GetComponent<TMP_Text>().text = $"{item.item_name} - ${item.item_price}"; //
+                        currentShopCard.transform.Find("ShopItemController").GetComponent<ShopItemData>().shopItem = item;
 
                         // --- NEW: Set the item image ---
                         // Find the Image component using the specified relative path.
