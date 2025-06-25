@@ -162,7 +162,7 @@ public class ProfilePageDataLoader : MonoBehaviour
 
 
         // Update Coins
-        if (PlayerDataManager.IsDataLoaded && PlayerDataManager.CurrentPlayerMainData != null)
+        if (PlayerDataManager.IsDataLoaded)
         {
             coinsText.text ="$" + PlayerDataManager.CurrentPlayerMainData.coin.ToString();
         }
