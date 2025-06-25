@@ -56,79 +56,84 @@ public class RegistrationFormController : MonoBehaviour
             _errorText.text = "";
         }
 
+        Debug.Log("[04:53:41] --- Starting Input Verification ---"); // This is from your screenshot, keep it here.
+
+        // --- CRITICAL: Perform client-side input verification FIRST ---
+        if (!verifyInputs())
+        {
+            // If verifyInputs() returns false, it means there was a validation error.
+            // The error message has already been set by verifyInputs().
+            Debug.LogWarning("Verification FAILED. Stopping registration process.");
+            yield break; // IMMEDIATELY exit the coroutine if validation fails.
+        }
+
+        // If we reach here, it means client-side verification PASSED.
+        // Now, proceed with preparing the form for the server request.
         WWWForm form = new WWWForm();
-        // Sanity check on inputfields
-        if (verifyInputs())
-        {
-            form.AddField("username", _usernameInput.text);
-            form.AddField("email", _emailInput.text);
-            form.AddField("password", _passwordInput.text);
-        }
-        else
-        {
-            // verifyInputs() already handles setting the error text.
-            yield break; // Exit coroutine if inputs are not valid
-        }
+        form.AddField("username", _usernameInput.text);
+        form.AddField("email", _emailInput.text);
+        form.AddField("password", _passwordInput.text);
 
         // Load API path from ServerConfig, following the existing project pattern.
         string apiPath = "";
-        ServerConfig loadedConfig = ServerConfig.LoadFromFile("Config/ServerConfig.json"); //
+        // RESTORED: Use LoadFromFile as it exists in your ServerConfig
+        ServerConfig loadedConfig = ServerConfig.LoadFromFile("Config/ServerConfig.json");
         if (loadedConfig != null)
         {
-            apiPath = loadedConfig.GetApiPath(); //
+            apiPath = loadedConfig.GetApiPath();
         }
         else
         {
             Debug.LogError("[RegistrationFormController] Failed to load ServerConfig. Cannot proceed with registration.");
-            SetErrorText("Failed to load server configuration. Please try again later."); // NEW: Output to UI
+            SetErrorText("Failed to load server configuration. Please try again later.");
             yield break;
         }
 
         Debug.Log("API Path: " + apiPath);
-        UnityWebRequest request = UnityWebRequest.Post(apiPath + "/register.php", form); //
+        UnityWebRequest request = UnityWebRequest.Post(apiPath + "/register.php", form);
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.LogError("Registration request error: " + request.error);
-            SetErrorText("Network error during registration. Please check your internet connection."); // NEW: Output to UI
+            SetErrorText("Network error during registration. Please check your internet connection.");
         }
         else
         {
             Debug.Log("Raw Registration Response: " + request.downloadHandler.text);
             _RegistrationResponse registrationResponse = JsonUtility.FromJson<_RegistrationResponse>(request.downloadHandler.text);
 
-            if (registrationResponse.status_code == 0) // Registration Successful
+            if (registrationResponse.status_code == 0) // Registration Successful (server-side)
             {
-                Debug.Log("Registration Successful for player ID: " + registrationResponse.player_id + ". Attempting auto-login."); //
-                SetErrorText("Registration successful! Logging in...", true); // NEW: Positive message to UI
+                Debug.Log("Registration Successful for player ID: " + registrationResponse.player_id + ". Attempting auto-login.");
+                SetErrorText("Registration successful! Logging in...", true);
 
                 // --- Automatic login and scene loading ---
                 PlayerDataManager.ResetPlayerData(); // Clear any old player data.
 
-                Debug.Log("Attempting to fetch player data for auto-login for player ID: " + registrationResponse.player_id); //
-                //yield return PlayerDataManager.FetchPlayerData(registrationResponse.player_id); // Fetch player data.
-                yield return Login(_usernameInput.text, _passwordInput.text);
+                Debug.Log("Attempting to fetch player data for auto-login for player ID: " + registrationResponse.player_id);
+                yield return Login(_usernameInput.text, _passwordInput.text); // Perform auto-login
 
-                if (PlayerAuthSession.IsLoggedIn) //
+                if (PlayerAuthSession.IsLoggedIn) // Check if auto-login was successful
                 {
-                    Debug.Log($"Successfully auto-logged in player ID: {PlayerAuthSession.PlayerId}. Loading Intro Video scene."); //
-                    SceneManager.LoadScene("Intro Video"); // Load the Intro Video scene.
+                    Debug.Log($"Successfully auto-logged in player ID: {PlayerAuthSession.PlayerId}. Loading Intro Video scene.");
+                    // This is the ONLY place where scene loading should happen after a successful registration and auto-login.
+                    GetComponent<SceneLoaderHelper>().LoadTargetScene();
                 }
                 else
                 {
-                    Debug.LogError("Auto-login failed after registration: " + PlayerDataManager.LastErrorMessage); //
-                    SetErrorText("Auto-login failed. Please try logging in manually.", false); // NEW: Output to UI
-                    // Fallback to showing the login form if auto-login fails
+                    Debug.LogError("Auto-login failed after registration: " + PlayerDataManager.LastErrorMessage);
+                    SetErrorText("Auto-login failed. Please try logging in manually.", false);
+                    // If auto-login fails, show the login form.
                     GameObject formRenderController = GameObject.Find("FormRenderController");
-                    // Assuming FormRenderScript is actually AuthFormRenderScript based on your project structure.
-                    formRenderController.GetComponent<FormRenderScript>().showLoginForm(); //
+                    formRenderController.GetComponent<FormRenderScript>().showLoginForm();
                 }
             }
-            else // Registration Failed on server side
+            else // Registration Failed on server side (status_code != 0)
             {
-                Debug.LogWarning($"User registration Failed with status code: {registrationResponse.status_code}, message: {registrationResponse.error_message}"); //
-                SetErrorText(registrationResponse.error_message, false); // NEW: Output server error message to UI
+                Debug.LogWarning($"User registration Failed with status code: {registrationResponse.status_code}, message: {registrationResponse.error_message}");
+                SetErrorText(registrationResponse.error_message, false); // Output server error message to UI
+                                                                         // Crucially, NO scene change here.
             }
         }
     }
@@ -145,7 +150,7 @@ public class RegistrationFormController : MonoBehaviour
         }
         else
         {
-            yield return null;
+            yield break;
         }
 
         string apiPath = ServerConfig.LoadFromFile("Config/ServerConfig.json").GetApiPath();
@@ -181,64 +186,72 @@ public class RegistrationFormController : MonoBehaviour
     /// Outputs error messages to the _errorText UI element.
     /// </summary>
     /// <returns>True if inputs are valid, false otherwise.</returns>
+        // Replace your existing verifyInputs() method with this one.
     public bool verifyInputs()
     {
-        // Clear previous error messages for a new verification attempt
+        Debug.Log("--- Starting Input Verification ---");
+
         if (_errorText != null)
         {
             _errorText.text = "";
         }
 
-        // Checks if username is valid
         if (string.IsNullOrEmpty(_usernameInput.text))
         {
             SetErrorText("Username cannot be empty.");
+            Debug.LogWarning("Verification FAILED: Username is empty.");
             return false;
         }
 
-        // Checks if email is valid
         if (string.IsNullOrEmpty(_emailInput.text))
         {
             SetErrorText("Email cannot be empty.");
+            Debug.LogWarning("Verification FAILED: Email is empty.");
             return false;
         }
-        // Basic email format check (can be expanded)
+
         if (!IsValidEmail(_emailInput.text))
         {
             SetErrorText("Please enter a valid email address.");
+            Debug.LogWarning("Verification FAILED: Email format is invalid.");
             return false;
         }
 
-        // Checks if confirmEmail is same as email
         if (_emailInput.text != _confirmEmailInput.text)
         {
             SetErrorText("Emails do not match.");
+            Debug.LogWarning("Verification FAILED: Emails do not match.");
             return false;
         }
 
-        // Checks if password is valid
         if (string.IsNullOrEmpty(_passwordInput.text))
         {
             SetErrorText("Password cannot be empty.");
+            Debug.LogWarning("Verification FAILED: Password is empty.");
             return false;
         }
-        // Example: Password length requirement
+
+        // --- THIS IS THE MOST IMPORTANT PART ---
+        Debug.Log($"Checking password length. Text is '{_passwordInput.text}', Length is {_passwordInput.text.Length}");
         if (_passwordInput.text.Length < 6)
         {
             SetErrorText("Password must be at least 6 characters long.");
-            return false;
+            Debug.LogWarning("Verification FAILED: Password is too short.");
+            return false; // This should be triggering
         }
+        // -----------------------------------------
 
-        // Checks if confirmPassword is same as password
         if (_passwordInput.text != _confirmPasswordInput.text)
         {
             SetErrorText("Passwords do not match.");
+            Debug.LogWarning("Verification FAILED: Passwords do not match.");
             return false;
         }
 
-        // All checks passed
+        Debug.Log("--- Verification PASSED ---");
         return true;
     }
+
 
     /// <summary>
     /// Helper method to set the error text on the UI.

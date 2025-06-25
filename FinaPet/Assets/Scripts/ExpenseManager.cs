@@ -1,9 +1,9 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Collections;
 using System.Text;
 using System;
+
 using TMPro; // Make sure this is using TMPro if your text is TextMeshPro
 using UnityEngine.SceneManagement; // Required for loading scenes
 using System.Collections.Generic; // Required for List
@@ -26,7 +26,7 @@ public class ExpenseManager : MonoBehaviour
     [SerializeField] private Button goBackButton; // The new button
 
     [Header("Player and Server Config")]
-    public int playerId = 1; // Default player ID
+    public int playerId = 1;
     private const string LAST_SUBMISSION_DATE_KEY = "LastExpenseSubmissionDate";
 
     // Internal state for calculations
@@ -36,8 +36,25 @@ public class ExpenseManager : MonoBehaviour
 
     void Start()
     {
-        // Hide popups on start
+        // --- This is the core logic that runs every time the scene loads ---
+        string lastSubmissionDate = PlayerPrefs.GetString(LAST_SUBMISSION_DATE_KEY, "");
+        string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+        if (lastSubmissionDate == currentDate)
+        {
+            // If we already submitted today, go straight to Status Mode.
+            SetUIMode(false, "Return to Diary");
+        }
+        else
+        {
+            // Otherwise, it's a new day. Go to Input Mode.
+            SetUIMode(true);
+        }
+        // --- End of core logic ---
+
+        // Hide the confirmation popup on start
         confirmationPopup.SetActive(false);
+
         statusPanel.SetActive(false);
 
         // Determine player ID based on login status
@@ -50,7 +67,6 @@ public class ExpenseManager : MonoBehaviour
             Debug.LogWarning("Player not logged in, using default ID: " + playerId);
         }
 
-        // Add listeners to the buttons
         submitButton.onClick.AddListener(OnSubmitClicked);
         yesButton.onClick.AddListener(OnYesClicked);
         noButton.onClick.AddListener(OnNoClicked);
@@ -389,10 +405,12 @@ public class ExpenseManager : MonoBehaviour
 
         if (statusPanel != null && statusText != null)
         {
-            statusText.text = message;
+            addExpensePage.SetActive(false);
             statusPanel.SetActive(true);
+            statusText.text = message;
         }
     }
+
 
     /// <summary>
     /// Helper method to set the status text and its color.

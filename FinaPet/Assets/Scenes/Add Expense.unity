@@ -2123,13 +2123,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4f75abe7bff63148a5149b759fb20f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  addExpensePage: {fileID: 404568993}
+  statusPanel: {fileID: 1074979383}
   expenseInputField: {fileID: 1200130479}
   submitButton: {fileID: 1894252153}
   confirmationPopup: {fileID: 2031415413}
   confirmSubmitText: {fileID: 586377992}
   yesButton: {fileID: 564565921}
   noButton: {fileID: 1085176770}
-  statusPanel: {fileID: 1074979383}
   statusText: {fileID: 1462418066}
   goBackButton: {fileID: 2103153092}
   playerId: 10
@@ -2466,13 +2467,15 @@ GameObject:
   - component: {fileID: 1074979384}
   - component: {fileID: 1074979386}
   - component: {fileID: 1074979385}
+  - component: {fileID: 1074979388}
+  - component: {fileID: 1074979387}
   m_Layer: 5
   m_Name: SubmittedPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1074979384
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2533,6 +2536,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1074979383}
   m_CullTransparentMesh: 1
+--- !u!114 &1074979387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1074979383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 2
+--- !u!114 &1074979388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1074979383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: 770
+  m_MinHeight: 305
+  m_PreferredWidth: 790.6465
+  m_PreferredHeight: 325.3285
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &1085176766
 GameObject:
   m_ObjectHideFlags: 0
@@ -4011,6 +4048,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1115154058}
     m_Modifications:
+    - target: {fileID: 2447460538752790516, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2468670351343363240, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
       propertyPath: m_Color.b
       value: 0.5568628
@@ -4289,6 +4330,8 @@ GameObject:
   - component: {fileID: 2031415414}
   - component: {fileID: 2031415416}
   - component: {fileID: 2031415415}
+  - component: {fileID: 2031415418}
+  - component: {fileID: 2031415417}
   m_Layer: 5
   m_Name: ConfirmSubmitPanel
   m_TagString: Untagged
@@ -4357,6 +4400,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2031415413}
   m_CullTransparentMesh: 1
+--- !u!114 &2031415417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2031415413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 2
+--- !u!114 &2031415418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2031415413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: 900
+  m_MinHeight: 460
+  m_PreferredWidth: 950.3532
+  m_PreferredHeight: 481.09167
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &2068688859
 GameObject:
   m_ObjectHideFlags: 0

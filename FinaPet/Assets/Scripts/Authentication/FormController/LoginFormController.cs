@@ -57,7 +57,7 @@ public class LoginFormController : MonoBehaviour
                 PlayerAuthSession.StartSession(loginResponse.player_data.username, loginResponse.player_data.player_id);
                 // Wait for the data fetch to complete before changing scenes
                 yield return PlayerDataManager.FetchPlayerData(loginResponse.player_data.player_id);
-                SceneManager.LoadScene("MainMenu");
+                GetComponent<SceneLoaderHelper>().LoadTargetScene();
             }
             else
             {

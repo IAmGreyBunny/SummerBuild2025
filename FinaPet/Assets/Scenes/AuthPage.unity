@@ -857,50 +857,6 @@ MonoBehaviour:
   loginFormPrefab: {fileID: 2237436632640194420, guid: 9b878d428ff964a4892555b81686a12c, type: 3}
   registrationFormPrefab: {fileID: 7225921025897256689, guid: 31f2b51cd00b1944f8b3f9e341fb841f, type: 3}
   formParent: {fileID: 542386548}
---- !u!1 &726911596
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 726911598}
-  - component: {fileID: 726911597}
-  m_Layer: 0
-  m_Name: SceneController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &726911597
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 726911596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d6812061962aeb4d8dfd87f198099c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &726911598
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 726911596}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 381.16135, y: 344.7147, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &863047974
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2138,7 +2094,9 @@ MonoBehaviour:
   defaultMusic: {fileID: 8300000, guid: 530f8b9c01fb86f43bfbb344edf86546, type: 3}
   loopMusic: 1
   masterVolume: 1
-  sceneMusicConfigs: []
+  sceneMusicConfigs:
+  - {fileID: 11400000, guid: 535e19eb84db1cb4ba1e35bd930b6a4d, type: 2}
+  - {fileID: 11400000, guid: d54694243b88dba438a8254c489c8f4f, type: 2}
   stopMusicIfNoConfig: 0
 --- !u!4 &1638619957
 Transform:
@@ -2538,4 +2496,3 @@ SceneRoots:
   - {fileID: 273336461}
   - {fileID: 714047891}
   - {fileID: 1638619957}
-  - {fileID: 726911598}
