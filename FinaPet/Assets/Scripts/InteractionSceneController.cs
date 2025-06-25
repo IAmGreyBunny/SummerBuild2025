@@ -22,7 +22,8 @@ public class InteractionSceneController : MonoBehaviour
         Debug.Log($"Bridged data for pet type {petToSpawn.pet_type} to PetSession. Your spawner can now proceed.");
 
         // 3. Find your existing spawner in the scene to confirm it exists.
-        IndivPetSpawner petSpawner = FindObjectOfType<IndivPetSpawner>();
+        // FIX: Replaced FindObjectOfType with FindFirstObjectByType
+        IndivPetSpawner petSpawner = FindFirstObjectByType<IndivPetSpawner>();
         if (petSpawner == null)
         {
             Debug.LogError("Could not find an object with the 'IndivPetSpawner' script in the scene!");
@@ -44,7 +45,8 @@ public class InteractionSceneController : MonoBehaviour
         // Find the PetDetails script that is now in the scene.
         // NOTE: This assumes your script on the pet is named "PetDetails".
         // If it's named something else, change the type here.
-        PetDetails petDetails = FindObjectOfType<PetDetails>();
+        // FIX: Replaced FindObjectOfType with FindFirstObjectByType
+        PetDetails petDetails = FindFirstObjectByType<PetDetails>();
 
         if (petDetails != null)
         {
