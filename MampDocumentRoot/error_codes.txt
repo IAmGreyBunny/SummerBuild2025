@@ -22,3 +22,5 @@
 21: Update Pet Hunger Query Failed
 22: affection value not provided
 23: Update Pet Affection Query Failed
+24: pet_type value not provided
+25: Insert Pet Query Failed
