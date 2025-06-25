@@ -179,10 +179,10 @@ public class DiaryDisplayManager : MonoBehaviour
         // --- Spending & Savings Calculations ---
         DateTime today = DateTime.Today;
 
-        SpendingRecord todaySpendingRecord = _spendingRecords.Find(r => DateTime.Parse(r.record_date).Date == today);
+        SpendingRecord todaySpendingRecord = _spendingRecords.Find(r => DateTime.Parse(r.last_updated).Date == today);
 
         List<SpendingRecord> thisMonthRecords = _spendingRecords.Where(r => {
-            DateTime recordDate = DateTime.Parse(r.record_date);
+            DateTime recordDate = DateTime.Parse(r.last_updated);
             return recordDate.Year == today.Year && recordDate.Month == today.Month;
         }).ToList();
 
@@ -250,7 +250,7 @@ public class DiaryDisplayManager : MonoBehaviour
     private class SpendingRecord
     {
         public float daily_spending;
-        public string record_date; // Keep as string for parsing
+        public string last_updated; // Keep as string for parsing
     }
     #endregion
 }
