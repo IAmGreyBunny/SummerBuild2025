@@ -1244,9 +1244,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attentionSlider: {fileID: 1082865145}
-  decreaseIntervalInSeconds: 20
-  decreaseAmount: 5
-  petAmount: 15
 --- !u!1 &1002332305
 GameObject:
   m_ObjectHideFlags: 0
@@ -1981,8 +1978,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1264173519}
   - component: {fileID: 1264173518}
+  - component: {fileID: 1264173520}
   m_Layer: 0
-  m_Name: FeedManager
+  m_Name: FeedAffectionManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2001,7 +1999,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   feedCountText: {fileID: 1136074467}
-  debug_player_id: 10
+  hungerManager: {fileID: 1989097498}
+  hungerPointsPerFeed: 20
+  debug_id: 10
 --- !u!4 &1264173519
 Transform:
   m_ObjectHideFlags: 0
@@ -2017,6 +2017,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1264173520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1264173517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28af0f1b9322ccc41a8cf38a10a088fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attentionManager: {fileID: 920625479}
+  affectionPointsPerPet: 5
 --- !u!224 &1266082352 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7025302453419891468, guid: 5641b4cea2608ba49a6c2d2f19c99fda, type: 3}
@@ -3041,9 +3055,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hungerSlider: {fileID: 1060271657}
   petRanAwayPopup: {fileID: 383765100}
-  decreaseIntervalInSeconds: 30
-  decreaseAmount: 5
-  feedAmount: 2
 --- !u!114 &1989097499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3298,7 +3309,15 @@ PrefabInstance:
     - target: {fileID: 4493916433618279350, guid: 5bb00d25ccc2b8744b7a2b25c0b592a7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1989097498}
+      objectReference: {fileID: 1264173518}
+    - target: {fileID: 4493916433618279350, guid: 5bb00d25ccc2b8744b7a2b25c0b592a7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnFeedButtonClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 4493916433618279350, guid: 5bb00d25ccc2b8744b7a2b25c0b592a7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: FeedManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 6145472870093587838, guid: 5bb00d25ccc2b8744b7a2b25c0b592a7, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3382,6 +3401,14 @@ PrefabInstance:
     - target: {fileID: 7746128042271930592, guid: 5bb00d25ccc2b8744b7a2b25c0b592a7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 1264173520}
+    - target: {fileID: 7746128042271930592, guid: 5bb00d25ccc2b8744b7a2b25c0b592a7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnPetButtonClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 7746128042271930592, guid: 5bb00d25ccc2b8744b7a2b25c0b592a7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: AffectionManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7957827089570677057, guid: 5bb00d25ccc2b8744b7a2b25c0b592a7, type: 3}
       propertyPath: m_AnchorMax.y

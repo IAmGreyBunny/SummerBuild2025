@@ -22,7 +22,7 @@ public class IndivPetSpawner : MonoBehaviour
         if (type < 0 || type >= spriteLibraries.Length) { Debug.LogError("No SpriteLibrary for pet type: " + type); return; }
 
         // Spawn pet and assign it to our class-level variable.
-        Vector3 spawnPosition = new Vector3(-2.55f, -3.48f, 0f);
+        Vector3 spawnPosition = new Vector3(0f, -3.48f, 0f);
         petInstance = Instantiate(petPrefab, spawnPosition, Quaternion.identity);
 
         // Assign sprite
@@ -51,6 +51,7 @@ public class IndivPetSpawner : MonoBehaviour
         {
             highlighter.interactionPanel = panelInstance;
             highlighter.canvas = canvas;
+            highlighter.InitializeButtons();
             // ... your button finding logic ...
         }
     }

@@ -1,49 +1,63 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Manages the pet's affection UI slider. It initializes the slider's value
+/// based on the selected pet's data and provides methods for other scripts
+/// to interact with the affection value.
+/// </summary>
 public class AttentionManager : MonoBehaviour
 {
     [Header("Slider Reference")]
     public Slider attentionSlider;
-    [Header("Attention Settings")]
-    public float decreaseIntervalInSeconds = 20f;
-    public float decreaseAmount = 5f;
-    public float petAmount = 15f;
-
-    private float nextDecreaseTime;
 
     void Start()
     {
+        // Initialize the affection slider's value from the persistent data manager.
         if (GameDataManager.Instance != null && GameDataManager.Instance.selectedPet != null)
         {
             int initialAffection = GameDataManager.Instance.selectedPet.affection;
+
+            // Set slider properties. Assuming affection is always 0-100.
             attentionSlider.minValue = 0;
             attentionSlider.maxValue = 100;
             attentionSlider.value = initialAffection;
+
+            Debug.Log($"AttentionManager: Affection slider initialized with value: {initialAffection}");
         }
         else
         {
-            attentionSlider.value = 100;
-        }
-        nextDecreaseTime = Time.time + decreaseIntervalInSeconds;
-    }
-
-    void Update()
-    {
-        if (Time.time >= nextDecreaseTime)
-        {
-            DecreaseAttention();
-            nextDecreaseTime = Time.time + decreaseIntervalInSeconds;
+            // Fallback for testing or if data is missing.
+            Debug.LogWarning("AttentionManager: No pet data found in GameDataManager. Initializing affection to a default of 0.");
+            attentionSlider.minValue = 0;
+            attentionSlider.maxValue = 100;
+            attentionSlider.value = 0;
         }
     }
 
-    void DecreaseAttention()
+    /// <summary>
+    /// Gets the current integer value of the affection slider.
+    /// </summary>
+    public int GetCurrentAffection()
     {
-        attentionSlider.value = Mathf.Max(attentionSlider.minValue, attentionSlider.value - decreaseAmount);
+        return (int)attentionSlider.value;
     }
 
-    public void PetTheAnimal()
+    /// <summary>
+    /// Sets the affection slider to a new value, clamped between its min and max.
+    /// </summary>
+    /// <param name="newAffection">The new affection value.</param>
+    public void SetAffection(int newAffection)
     {
-        attentionSlider.value = Mathf.Min(attentionSlider.maxValue, attentionSlider.value + petAmount);
+        attentionSlider.value = Mathf.Clamp(newAffection, attentionSlider.minValue, attentionSlider.maxValue);
+    }
+
+    /// <summary>
+    /// Checks if the affection slider is at its maximum value.
+    /// </summary>
+    /// <returns>True if affection is full, false otherwise.</returns>
+    public bool IsAffectionFull()
+    {
+        return attentionSlider.value >= attentionSlider.maxValue;
     }
 }

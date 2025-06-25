@@ -17,11 +17,42 @@ public class AnimalHighlighter : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalColor = spriteRenderer.color;
-        interactionPanel.SetActive(false);
 
-        // Set up button click listeners
-        feedButton.onClick.AddListener(FeedAnimal);
-        petButton.onClick.AddListener(PetAnimal);
+        // Check if the panel is assigned, but don't set it active here.
+        if (interactionPanel != null)
+        {
+            interactionPanel.SetActive(false);
+        }
+        else
+        {
+            Debug.LogError("AnimalHighlighter: interactionPanel is not assigned!");
+        }
+
+        // REMOVE the button listener assignments from here.
+        // feedButton.onClick.AddListener(FeedAnimal);
+        // petButton.onClick.AddListener(PetAnimal);
+    }
+
+    public void InitializeButtons()
+    {
+        // This method will be called by the spawner after it assigns the buttons.
+        if (feedButton != null)
+        {
+            feedButton.onClick.AddListener(FeedAnimal);
+        }
+        else
+        {
+            Debug.LogError("AnimalHighlighter: feedButton reference is null during initialization!");
+        }
+
+        if (petButton != null)
+        {
+            petButton.onClick.AddListener(PetAnimal);
+        }
+        else
+        {
+            Debug.LogError("AnimalHighlighter: petButton reference is null during initialization!");
+        }
     }
 
     void Update()
