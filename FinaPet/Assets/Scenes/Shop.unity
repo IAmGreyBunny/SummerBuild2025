@@ -607,6 +607,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shop Item
       objectReference: {fileID: 0}
+    - target: {fileID: 3790250892909928985, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -633,11 +637,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 330
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 500
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_LocalPosition.x
@@ -673,7 +677,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -355
+      value: -302.18896
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -759,6 +763,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shopItemCardPrefab: {fileID: 3790250892909928985, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
   shopItemParent: {fileID: 250388120}
+  itemSpriteMappings:
+  - itemId: 1
+    itemSprite: {fileID: 3920547696042853087, guid: e61a910a2529a8b41b92b06793888e83, type: 3}
+  - itemId: 2
+    itemSprite: {fileID: 1497166947140476013, guid: a2aac24349bc4b84bab3f970b3511e36, type: 3}
+  - itemId: 3
+    itemSprite: {fileID: 8553639855411760343, guid: 10850dc117295824dbf160ff73ec3e8d, type: 3}
+  - itemId: 4
+    itemSprite: {fileID: 6188544173058632022, guid: e22d84ec69c448b4cbaae9d979c6b410, type: 3}
+  itemImageRelativePath: Box Body/Image
 --- !u!4 &506278120
 Transform:
   m_ObjectHideFlags: 0
@@ -809,10 +823,10 @@ RectTransform:
   - {fileID: 655804503}
   m_Father: {fileID: 1266862306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 20, y: -760}
-  m_SizeDelta: {x: 742.8707, y: 10}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &637869141
 MonoBehaviour:
@@ -1689,6 +1703,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shop Item (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3790250892909928985, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1715,11 +1733,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 330
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 500
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1755,7 +1773,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -355
+      value: -302.18896
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1925,10 +1943,10 @@ RectTransform:
   - {fileID: 250388120}
   m_Father: {fileID: 1266862306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 391.43536, y: -395}
-  m_SizeDelta: {x: 742.8707, y: 710}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1615962130
 MonoBehaviour:
@@ -2029,6 +2047,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shop Item (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 3790250892909928985, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2055,11 +2077,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 330
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 500
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2095,7 +2117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -355
+      value: -302.18896
       objectReference: {fileID: 0}
     - target: {fileID: 3946495996714231135, guid: f8ce3784be3ace243871dee2b58133ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
