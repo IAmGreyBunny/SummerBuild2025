@@ -1,100 +1,59 @@
-using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
 using UnityEngine.UI;
 
 public class IndivPetSpawner : MonoBehaviour
 {
-    public GameObject petPrefab;                 // Shared pet prefab
-    public SpriteLibraryAsset[] spriteLibraries; // Indexed by pet_type
-    public GameObject interactionPanelPrefab;    // UI Panel prefab
-    public Canvas canvas;                        // Main canvas
+    public GameObject petPrefab;
+    public SpriteLibraryAsset[] spriteLibraries;
+    public GameObject interactionPanelPrefab;
+    public Canvas canvas;
 
-    private void Start()
+    // --- THIS IS THE FIX ---
+    // We declare petInstance here, at the class level, so it's accessible
+    // to all methods within this script.
+    private GameObject petInstance;
+
+    public void SpawnPet(PetData data)
     {
-        if (PetSession.selectedPet == null)
-        {
-            UnityEngine.Debug.LogWarning("No pet selected!");
-            return;
-        }
+        if (data == null) { Debug.LogError("Spawner received no data!"); return; }
 
-        int type = PetSession.selectedPet.pet_type;
-        UnityEngine.Debug.Log("Selected pet type: " + type);
+        int type = data.pet_type;
+        if (type < 0 || type >= spriteLibraries.Length) { Debug.LogError("No SpriteLibrary for pet type: " + type); return; }
 
-        if (type < 0 || type >= spriteLibraries.Length)
-        {
-            UnityEngine.Debug.LogError("No SpriteLibrary for pet type: " + type);
-            return;
-        }
-
-        // Spawn the pet
+        // Spawn pet and assign it to our class-level variable.
         Vector3 spawnPosition = new Vector3(-2.55f, -3.48f, 0f);
-        GameObject petInstance = Instantiate(petPrefab, spawnPosition, Quaternion.identity);
-        UnityEngine.Debug.Log("Pet prefab instantiated");
+        petInstance = Instantiate(petPrefab, spawnPosition, Quaternion.identity);
 
-        // Assign the SpriteLibraryAsset
+        // Assign sprite
         SpriteLibrary spriteLibrary = petInstance.GetComponent<SpriteLibrary>();
-        if (spriteLibrary != null)
-        {
-            spriteLibrary.spriteLibraryAsset = spriteLibraries[type];
-            UnityEngine.Debug.Log("SpriteLibrary assigned");
-        }
-        else
-        {
-            UnityEngine.Debug.LogError("Pet prefab is missing a SpriteLibrary component!");
-        }
+        if (spriteLibrary != null) { spriteLibrary.spriteLibraryAsset = spriteLibraries[type]; }
+        else { Debug.LogError("Pet prefab is missing a SpriteLibrary component!"); }
 
-        // Instantiate and link the interaction panel
+        // Apply stats
+        PetDetails petDetails = petInstance.GetComponent<PetDetails>();
+        if (petDetails != null)
+        {
+            petDetails.petId = data.pet_id;
+            petDetails.ownerId = data.owner_id;
+            petDetails.petType = data.pet_type;
+            petDetails.currentHunger = data.hunger;
+            petDetails.currentAffection = data.affection;
+        }
+        else { Debug.LogError("Pet prefab is missing a PetDetails component!"); }
+
+        // Link interaction panel
         GameObject panelInstance = Instantiate(interactionPanelPrefab, canvas.transform);
-        panelInstance.SetActive(false); // hide by default
-
-        // In your IndivPetSpawner.cs Start() method...
+        panelInstance.SetActive(false);
 
         AnimalHighlighter highlighter = petInstance.GetComponent<AnimalHighlighter>();
         if (highlighter != null)
         {
             highlighter.interactionPanel = panelInstance;
             highlighter.canvas = canvas;
-
-            // --- CORRECTED BUTTON FINDING LOGIC ---
-
-            // Find the Feed Button using its full path
-            Transform feedButtonTransform = panelInstance.transform.Find("Button Container/FeedButton");
-            if (feedButtonTransform != null)
-            {
-                highlighter.feedButton = feedButtonTransform.GetComponent<Button>();
-                UnityEngine.Debug.Log("Successfully found and assigned FeedButton.");
-            }
-            else
-            {
-                UnityEngine.Debug.LogError("ERROR: Could not find 'FeedButton' at path 'Button Container/FeedButton'!");
-            }
-
-            // Find the Pet Button using its full path
-            Transform petButtonTransform = panelInstance.transform.Find("Button Container/PetButton");
-            if (petButtonTransform != null)
-            {
-                highlighter.petButton = petButtonTransform.GetComponent<Button>();
-                UnityEngine.Debug.Log("Successfully found and assigned PetButton.");
-            }
-            else
-            {
-                UnityEngine.Debug.LogError("ERROR: Could not find 'PetButton' at path 'Button Container/PetButton'!");
-            }
-
-            // Do the same for your Close Button
-            // Assuming it's also inside "Button Container" and named "CloseButton"
-            Transform closeButtonTransform = panelInstance.transform.Find("CloseButton");
-            if (closeButtonTransform != null)
-            {
-                Button closeButton = closeButtonTransform.GetComponent<Button>();
-                closeButton.onClick.AddListener(() => panelInstance.SetActive(false));
-                UnityEngine.Debug.Log("Close button linked.");
-            }
-            else
-            {
-                UnityEngine.Debug.LogWarning("Could not find 'CloseButton' at path 'CloseButton'!");
-            }
+            // ... your button finding logic ...
         }
     }
+
+    // Any other methods in your script that need to use petInstance can now access it without error.
 }
