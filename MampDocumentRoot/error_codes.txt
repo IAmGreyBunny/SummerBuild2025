@@ -33,3 +33,5 @@
 32: quantity value not provided
 33: Upsert Inventory Query Failed
 34: Failed to prepare the database statement
+35: Get Player Spending Query Failed
+36: Failed to prepare the database statement for fetching spending.
