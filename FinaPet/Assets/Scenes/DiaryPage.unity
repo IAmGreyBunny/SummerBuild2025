@@ -5291,6 +5291,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1799623146}
     m_Modifications:
+    - target: {fileID: 1870700274254969152, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
+      propertyPath: sceneNameToLoad
+      value: Add Expense
+      objectReference: {fileID: 0}
+    - target: {fileID: 2447460538752790516, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2447460538752790516, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1527760652}
+    - target: {fileID: 2447460538752790516, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PerformSceneChange
+      objectReference: {fileID: 0}
+    - target: {fileID: 2447460538752790516, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SceneChangeButtonHandler, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 2468670351343363240, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
       propertyPath: m_Color.b
       value: 0.10980393
@@ -5469,6 +5489,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8861055301295400456, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
   m_PrefabInstance: {fileID: 1527760650}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1527760652 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1870700274254969152, guid: d0dfc0071df51aa41934c9eca2bbaed0, type: 3}
+  m_PrefabInstance: {fileID: 1527760650}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afe1597e4dbc5ae48922a67aefc50fcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1568682185
 GameObject:
   m_ObjectHideFlags: 0
