@@ -1,50 +1,43 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PetNeedsManager : MonoBehaviour
 {
     [Header("Slider Reference")]
     public Slider hungerSlider;
-
+    [Header("UI Popups")]
+    public GameObject petRanAwayPopup;
     [Header("Hunger Settings")]
     public float decreaseIntervalInSeconds = 30f;
-    public float decreaseAmount = 10f; // Changed to whole numbers for clarity
-    public float feedAmount = 20f;     // Changed to whole numbers for clarity
+    public float decreaseAmount = 10f;
+    public float feedAmount = 20f;
 
     private float nextDecreaseTime;
+    private bool petHasRunAway = false;
 
     void Start()
     {
-        // --- THIS IS THE FIX ---
-        // 1. Check if the GameDataManager and its selected pet data exist.
+        if (petRanAwayPopup != null) { petRanAwayPopup.SetActive(false); }
+
         if (GameDataManager.Instance != null && GameDataManager.Instance.selectedPet != null)
         {
-            // 2. Get the hunger value from the transferred data.
             int initialHunger = GameDataManager.Instance.selectedPet.hunger;
-
-            // 3. Set the slider's properties.
-            // Assuming your hunger value from the server is 0-100.
             hungerSlider.minValue = 0;
             hungerSlider.maxValue = 100;
             hungerSlider.value = initialHunger;
-
-            Debug.Log($"Hunger slider initialized with value: {initialHunger}");
         }
         else
         {
-            // Fallback for when you test the scene directly without coming from MyPet scene.
-            Debug.LogWarning("No pet data found. Initializing hunger to a default value of 100.");
-            hungerSlider.minValue = 0;
-            hungerSlider.maxValue = 100;
-            hungerSlider.value = 100; // Full hunger at start
+            hungerSlider.value = 100;
         }
-        // --- END OF FIX ---
-
         nextDecreaseTime = Time.time + decreaseIntervalInSeconds;
+        CheckHungerStatus();
     }
 
     void Update()
     {
+        if (petHasRunAway) { return; }
         if (Time.time >= nextDecreaseTime)
         {
             DecreaseHunger();
@@ -55,12 +48,31 @@ public class PetNeedsManager : MonoBehaviour
     void DecreaseHunger()
     {
         hungerSlider.value = Mathf.Max(hungerSlider.minValue, hungerSlider.value - decreaseAmount);
-        Debug.Log("Hunger decreased to: " + hungerSlider.value);
+        CheckHungerStatus();
+    }
+
+    private void CheckHungerStatus()
+    {
+        if (petHasRunAway) return;
+        if (hungerSlider.value <= 0) { HandlePetRunAway(); }
     }
 
     public void FeedPet()
     {
+        if (petHasRunAway) return;
         hungerSlider.value = Mathf.Min(hungerSlider.maxValue, hungerSlider.value + feedAmount);
-        Debug.Log("Feeding the pet. Hunger is now: " + hungerSlider.value);
+    }
+
+    private void HandlePetRunAway()
+    {
+        petHasRunAway = true;
+        PetDetails petObject = FindObjectOfType<PetDetails>();
+        if (petObject != null) { petObject.gameObject.SetActive(false); }
+        if (petRanAwayPopup != null) { petRanAwayPopup.SetActive(true); }
+    }
+
+    public void GoToPreviousScene()
+    {
+        SceneManager.LoadScene("My Pet");
     }
 }
