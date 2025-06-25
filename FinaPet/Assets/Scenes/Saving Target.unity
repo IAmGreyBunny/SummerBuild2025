@@ -191,7 +191,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Saving Target
+  m_text: Budgeting
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c1857c23e64c8d459cb7aaa8ac46d7d, type: 2}
   m_sharedMaterial: {fileID: 190191317364896326, guid: 3c1857c23e64c8d459cb7aaa8ac46d7d, type: 2}
@@ -1652,7 +1652,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Monthly Target:'
+  m_text: 'Monthly budget:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c1857c23e64c8d459cb7aaa8ac46d7d, type: 2}
   m_sharedMaterial: {fileID: 190191317364896326, guid: 3c1857c23e64c8d459cb7aaa8ac46d7d, type: 2}
@@ -1679,8 +1679,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 85
-  m_fontSizeBase: 85
+  m_fontSize: 70
+  m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4126,7 +4126,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Allowance:'
+  m_text: 'Monthly Allowance:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3c1857c23e64c8d459cb7aaa8ac46d7d, type: 2}
   m_sharedMaterial: {fileID: 190191317364896326, guid: 3c1857c23e64c8d459cb7aaa8ac46d7d, type: 2}
@@ -4153,8 +4153,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 85
-  m_fontSizeBase: 85
+  m_fontSize: 70
+  m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

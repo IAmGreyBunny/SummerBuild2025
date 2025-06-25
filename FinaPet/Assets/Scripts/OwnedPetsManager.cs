@@ -3,7 +3,9 @@ using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Unity.VisualScripting; // Required for encoding the JSON string
+using Unity.VisualScripting;
+using UnityEngine.UI; // Required for UI elements like Button, GameObject
+using UnityEngine.SceneManagement; // Required for loading scenes
 
 /// <summary>
 /// Manages fetching pet data from the server and spawning them using the PetSpawner.
@@ -12,6 +14,10 @@ public class OwnedPetsManager : MonoBehaviour
 {
     public PetSpawner petSpawner;
     public int ownerId = 1; // Example ID. This should be set dynamically after a player logs in.
+
+    // NEW: UI Elements for the Pop-up
+    public GameObject noPetsPopupPanel; // Assign your "NoPetsPopupPanel" GameObject here
+    public string shopSceneName = "ShopScene"; // The name of your shop scene
 
     // This is called when the script instance is being loaded.
     void Start()
@@ -25,6 +31,12 @@ public class OwnedPetsManager : MonoBehaviour
         else
         {
             Debug.LogError("Player not logged in using default: " + ownerId);
+        }
+
+        // Ensure the pop-up is initially hidden
+        if (noPetsPopupPanel != null)
+        {
+            noPetsPopupPanel.SetActive(false);
         }
 
         FetchAndSpawnPlayerPets();
@@ -85,6 +97,7 @@ public class OwnedPetsManager : MonoBehaviour
             if (request.result != UnityWebRequest.Result.Success)
             {
                 Debug.LogError("API Call Failed! Error: " + request.error);
+                // Optionally, you could show an error pop-up here too
             }
             else
             {
@@ -94,21 +107,64 @@ public class OwnedPetsManager : MonoBehaviour
                 if (response.status_code == 0)
                 {
                     Debug.Log($"Successfully fetched {response.pets.Count} pet(s) for owner ID {ownerId}.");
-                    // Loop through each pet in the response and spawn it
-                    foreach (var pet in response.pets)
+
+                    // NEW: Check if there are no pets
+                    if (response.pets == null || response.pets.Count == 0)
                     {
-                        Debug.Log($"Spawning pet of type: {pet.pet_type} with ID: {pet.pet_id}, Hunger: {pet.hunger}, Affection: {pet.affection}");
-                        petSpawner.SpawnPetWithData(pet); // Call the new method with full data
+                        Debug.Log("No pets found! Displaying pop-up.");
+                        ShowNoPetsPopup();
+                    }
+                    else
+                    {
+                        // Loop through each pet in the response and spawn it
+                        foreach (var pet in response.pets)
+                        {
+                            Debug.Log($"Spawning pet of type: {pet.pet_type} with ID: {pet.pet_id}, Hunger: {pet.hunger}, Affection: {pet.affection}");
+                            petSpawner.SpawnPetWithData(pet); // Call the new method with full data
+                        }
                     }
                 }
                 else
                 {
                     // Handle server-side errors (e.g., owner not found)
                     Debug.LogError("API returned an error: " + response.error_message);
+                    // Optionally, you could show an error pop-up here
                 }
             }
         }
     }
+
+    /// <summary>
+    /// Activates the "No Pets" pop-up panel.
+    /// </summary>
+    private void ShowNoPetsPopup()
+    {
+        if (noPetsPopupPanel != null)
+        {
+            noPetsPopupPanel.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError("NoPetsPopupPanel is not assigned!");
+        }
+    }
+
+    /// <summary>
+    /// Public method to be called by the "Go to Shop" button.
+    /// </summary>
+    public void GoToShop()
+    {
+        if (!string.IsNullOrEmpty(shopSceneName))
+        {
+            Debug.Log($"Loading shop scene: {shopSceneName}");
+            SceneManager.LoadScene(shopSceneName);
+        }
+        else
+        {
+            Debug.LogError("Shop scene name is not set in OwnedPetsManager!");
+        }
+    }
+
 
     // --- Helper classes to match the JSON structure (These remain the same) ---
 
