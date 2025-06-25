@@ -84,7 +84,7 @@ public class IndivPetSpawner : MonoBehaviour
 
             // Do the same for your Close Button
             // Assuming it's also inside "Button Container" and named "CloseButton"
-            Transform closeButtonTransform = panelInstance.transform.Find("Button Container/CloseButton");
+            Transform closeButtonTransform = panelInstance.transform.Find("CloseButton");
             if (closeButtonTransform != null)
             {
                 Button closeButton = closeButtonTransform.GetComponent<Button>();
@@ -93,7 +93,7 @@ public class IndivPetSpawner : MonoBehaviour
             }
             else
             {
-                UnityEngine.Debug.LogWarning("Could not find 'CloseButton' at path 'Button Container/CloseButton'!");
+                UnityEngine.Debug.LogWarning("Could not find 'CloseButton' at path 'CloseButton'!");
             }
         }
     }
