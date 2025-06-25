@@ -1,323 +1,297 @@
 using UnityEngine;
 using UnityEngine.Networking;
+using System;
 using System.Collections;
-using System.Collections.Generic; // Required for List
 using System.Text;
-using System.IO; // Required for File.Exists and File.ReadAllText
-using TMPro; // Assuming you are using TextMeshPro for UI text
-
-// IMPORTANT: This script assumes that 'ServerConfig.cs' and 'PlayerData.cs'
-// (containing PlayerMainData, GetPlayerDataRequestData, GetPlayerDataResponseData,
-// and PlayerDataManager static class) are already defined in your Unity project
-// in their respective files (e.g., Assets/Scripts/Config/ServerConfig.cs, Assets/Scripts/PlayerData.cs).
-// If you encounter compile errors due to duplicate definitions, remove the corresponding
-// class definitions from the bottom of THIS file.
+using TMPro;
 
 /// <summary>
-/// Manages fetching player inventory (specifically feed count) from the backend,
-/// updating the UI display, and handling feed consumption.
-/// This script integrates with existing ServerConfig and PlayerDataManager patterns.
+/// Manages the entire pet feeding process. This includes updating the UI,
+/// calculating local changes, and sending updates for pet hunger and
+/// player inventory to the server.
 /// </summary>
-public class InventoryAndFeedManager : MonoBehaviour
+public class FeedManager : MonoBehaviour
 {
-    public static InventoryAndFeedManager Instance { get; private set; }
-
     [Header("UI References")]
-    [SerializeField] private TextMeshProUGUI feedCountText; // Assign this in the Inspector
+    [Tooltip("The UI Text element that displays the remaining feed count.")]
+    public TextMeshProUGUI feedCountText;
 
-    // Backend URLs dynamically loaded from ServerConfig
-    private string _getInventoryUrl;
-    private string _updateInventoryUrl;
+    [Tooltip("A reference to the PetNeedsManager script which controls the hunger slider.")]
+    public PetNeedsManager hungerManager;
 
-    private int _currentFeedCount;
-    /// <summary>
-    /// Gets and sets the current feed count. Automatically updates the UI when set.
-    /// </summary>
-    public int CurrentFeedCount
-    {
-        get { return _currentFeedCount; }
-        private set
-        {
-            _currentFeedCount = value;
-            UpdateFeedDisplay(); // Update UI whenever the count changes
-        }
-    }
+    [Header("Feeding Settings")]
+    [Tooltip("How many hunger points are restored per feeding.")]
+    public int hungerPointsPerFeed = 20;
 
-    // The item ID for feed, as specified in your request.
-    private const int FEED_ITEM_ID = 1;
+    [Header("Debug")]
+    [Tooltip("The player ID to use for testing when not logged in.")]
+    public int debug_id = 10;
 
-    // Debug Player ID - Used as a fallback if PlayerDataManager hasn't loaded data yet.
-    // IMPORTANT: In a live game, always ensure PlayerDataManager has loaded real data first.
-    public int debug_player_id = 10;
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-        // As per previous instruction and project flow, this manager should NOT persist across scenes.
-        // Therefore, DontDestroyOnLoad(gameObject); is intentionally omitted.
-    }
+    // --- Private State ---
+    private int _currentFeedCount = 0;
+    private bool _isFeeding = false; // Prevents spamming the feed button
+    private const int FEED_ITEM_ID = 1; // The item_id for 'Feed' in your database
+    private int player_id; // The active player ID, determined at Start.
 
     void Start()
     {
-        // Start the initialization coroutine
-        StartCoroutine(InitializeInventoryManager());
-    }
-
-    /// <summary>
-    /// Orchestrates the loading of server config and player inventory.
-    /// Waits for PlayerDataManager to be ready before fetching player-specific inventory.
-    /// </summary>
-    private IEnumerator InitializeInventoryManager()
-    {
-        // 1. Load Server Configuration synchronously using the existing ServerConfig.LoadFromFile()
-        // This relies on your ServerConfig.cs having a public static ServerConfig LoadFromFile(string) method.
-        ServerConfig loadedConfig = ServerConfig.LoadFromFile("Config/ServerConfig.json"); //
-        if (loadedConfig == null)
+        // Determine which player ID to use for this session.
+        if (PlayerAuthSession.IsLoggedIn)
         {
-            Debug.LogError("[InventoryAndFeedManager] Failed to load ServerConfig. Cannot proceed. Ensure ServerConfig.json is in StreamingAssets/Config/ and ServerConfig.cs is correctly defined.");
-            yield break;
-        }
-
-        // Construct full URLs using the loaded config's GetApiPath method
-        // This pattern matches how PlayerDataManager constructs its URLs.
-        string apiBaseUrl = loadedConfig.GetApiPath(); //
-        _getInventoryUrl = apiBaseUrl + "/get_player_inventory.php"; //
-        _updateInventoryUrl = apiBaseUrl + "/update_inventory.php"; // Assumed path for your update script
-
-        Debug.Log($"[InventoryAndFeedManager] Constructed URLs: GetInventoryUrl={_getInventoryUrl}, UpdateInventoryUrl={_updateInventoryUrl}");
-
-        // 2. Wait for PlayerDataManager to load player data
-        // This is crucial to ensure player_id is available before fetching inventory.
-        Debug.Log("[InventoryAndFeedManager] Waiting for PlayerDataManager to load data...");
-        // Yield until next frame if data is not loaded. Add a timeout or error handling for production.
-        while (!PlayerDataManager.IsDataLoaded) //
-        {
-            yield return null;
-        }
-
-        // 3. Get Player ID
-        int currentPlayerId;
-        if (PlayerDataManager.CurrentPlayerMainData != null) //
-        {
-            currentPlayerId = PlayerDataManager.CurrentPlayerMainData.player_id; //
-            Debug.Log($"[InventoryAndFeedManager] Player ID obtained from PlayerDataManager: {currentPlayerId}");
+            player_id = PlayerAuthSession.PlayerId;
+            Debug.Log($"FeedManager: Player is logged in. Using Player ID: {player_id}");
         }
         else
         {
-            currentPlayerId = debug_player_id;
-            Debug.LogWarning($"[InventoryAndFeedManager] PlayerDataManager.CurrentPlayerMainData is null. Using debug player ID: {currentPlayerId}. Ensure PlayerDataManager successfully loads player data.");
+            player_id = debug_id;
+            Debug.LogWarning($"FeedManager: Player not logged in. Using Debug ID: {player_id}");
         }
 
-        // 4. Fetch Player Inventory
-        StartCoroutine(FetchPlayerInventory(currentPlayerId));
+        // When the scene starts, fetch the player's inventory to get the initial feed count.
+        StartCoroutine(FetchPlayerInventory());
     }
 
     /// <summary>
-    /// Fetches the player's inventory from the backend PHP script.
+    /// PUBLIC method to be called by your "Feed" button's OnClick event.
     /// </summary>
-    private IEnumerator FetchPlayerInventory(int playerId)
+    public void OnFeedButtonClicked()
     {
-        if (string.IsNullOrEmpty(_getInventoryUrl))
+        // --- 1. Pre-computation Checks ---
+        // Block if a feeding action is already in progress.
+        if (_isFeeding)
         {
-            Debug.LogError("[InventoryAndFeedManager] Get Inventory URL is not set. Cannot fetch inventory. Check ServerConfig loading.");
+            Debug.LogWarning("FeedManager: Already processing a feed action.");
+            return;
+        }
+
+        // Check if the player has any feed left.
+        if (_currentFeedCount <= 0)
+        {
+            Debug.LogWarning("FeedManager: No feed left!");
+            // TODO: Optionally show a "You have no feed!" message to the player.
+            return;
+        }
+
+        // Check if the pet's hunger is already full.
+        if (hungerManager.IsHungerFull())
+        {
+            Debug.Log("FeedManager: Pet is already full, no need to feed.");
+            // TODO: Optionally show a "Your pet is full!" message.
+            return;
+        }
+
+        // --- 2. Start the Feeding Process ---
+        // If all checks pass, begin the feeding sequence.
+        StartCoroutine(Co_FeedProcess());
+    }
+
+    /// <summary>
+    /// The master coroutine that handles the entire feeding sequence step-by-step.
+    /// </summary>
+    private IEnumerator Co_FeedProcess()
+    {
+        _isFeeding = true; // Lock the process to prevent spamming.
+
+        // --- 3. Perform Local Calculations ---
+        // Determine the new values before updating anything.
+        int newFeedCount = _currentFeedCount - 1;
+        int newHunger = hungerManager.GetCurrentHunger() + hungerPointsPerFeed;
+
+        // --- 4. Optimistic UI Updates ---
+        // Update the UI immediately to give the player instant feedback.
+        _currentFeedCount = newFeedCount;
+        UpdateFeedCountUI();
+        hungerManager.SetHunger(newHunger);
+
+        // --- 5. Send Updates to the Server ---
+        // This coroutine will handle the two separate web requests.
+        yield return StartCoroutine(Co_UpdateStatsOnServer(newHunger, newFeedCount));
+
+        _isFeeding = false; // Unlock the process once everything is complete.
+    }
+
+    /// <summary>
+    /// Coroutine that sends the updated stats to the PHP backend.
+    /// It sends two separate requests: one for pet hunger and one for player inventory.
+    /// </summary>
+    private IEnumerator Co_UpdateStatsOnServer(int newHunger, int newFeedCount)
+    {
+        if (GameDataManager.Instance == null || GameDataManager.Instance.selectedPet == null)
+        {
+            Debug.LogError("FeedManager: Cannot update server, GameDataManager has no selected pet. Make sure pet data is being passed correctly between scenes.");
+            _isFeeding = false; // Unlock the feed button
+            yield break;
+        }
+        if (player_id <= 0)
+        {
+            Debug.LogError($"FeedManager: Cannot update server, invalid player_id: {player_id}.");
+            _isFeeding = false; // Unlock the feed button
             yield break;
         }
 
-        using (UnityWebRequest www = new UnityWebRequest(_getInventoryUrl, "POST"))
+        string apiPath = ServerConfig.LoadFromFile("Config/ServerConfig.json")?.GetApiPath();
+        if (string.IsNullOrEmpty(apiPath))
         {
-            // Reusing GetPlayerDataRequestData structure as it only contains player_id
-            GetPlayerDataRequestData requestData = new GetPlayerDataRequestData //
+            Debug.LogError("FeedManager: Cannot update server, failed to load API path.");
+            yield break; // Exit if the API path can't be found.
+        }
+
+        // --- First Request: Update Pet Hunger ---
+        string hungerUrl = apiPath + "/update_pet_hunger.php";
+        var hungerRequestData = new UpdatePetHungerRequest
+        {
+            pet_id = GameDataManager.Instance.selectedPet.pet_id,
+            hunger = newHunger,
+            // THIS IS THE FIX: Format the UTC time to match the standard SQL DATETIME format.
+            last_fed = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
+        };
+        string hungerJson = JsonUtility.ToJson(hungerRequestData);
+
+        Debug.Log($"FeedManager: Sending [Hunger Update] request to '{hungerUrl}'. JSON Body: {hungerJson}");
+        yield return SendPostRequest(hungerUrl, hungerJson, "Hunger Update");
+
+        // --- Second Request: Update Player Inventory ---
+        string inventoryUrl = apiPath + "/update_inventory_item.php";
+        var inventoryRequestData = new UpdateInventoryRequest
+        {
+            player_id = this.player_id, // Use the player_id determined at Start
+            item_id = FEED_ITEM_ID,
+            quantity = newFeedCount
+        };
+        string inventoryJson = JsonUtility.ToJson(inventoryRequestData);
+
+        Debug.Log($"FeedManager: Sending [Inventory Update] request to '{inventoryUrl}'. JSON Body: {inventoryJson}");
+        yield return SendPostRequest(inventoryUrl, inventoryJson, "Inventory Update");
+    }
+
+    /// <summary>
+    /// A reusable helper method to send POST requests and log the outcome.
+    /// </summary>
+    private IEnumerator SendPostRequest(string url, string jsonBody, string requestName)
+    {
+        using (var request = new UnityWebRequest(url, "POST"))
+        {
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                player_id = playerId //
-            };
-            string jsonData = JsonUtility.ToJson(requestData);
-            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
-
-            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            www.SetRequestHeader("Content-Type", "application/json");
-
-            Debug.Log($"[InventoryAndFeedManager] Sending inventory request for player ID: {playerId}, Body: {jsonData}");
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError($"[InventoryAndFeedManager] Error fetching inventory: {www.error}");
+                Debug.LogError($"FeedManager ({requestName}): Error sending request to {url}: {request.error}");
             }
             else
             {
-                string jsonResponse = www.downloadHandler.text;
-                Debug.Log($"[InventoryAndFeedManager] Inventory Response: {jsonResponse}");
+                Debug.Log($"FeedManager ({requestName}): Successfully received response from {url}. Response: {request.downloadHandler.text}");
+            }
+        }
+    }
 
-                try
+    /// <summary>
+    /// Fetches the player's full inventory from the server to find the initial feed count.
+    /// </summary>
+    private IEnumerator FetchPlayerInventory()
+    {
+        string apiPath = ServerConfig.LoadFromFile("Config/ServerConfig.json")?.GetApiPath();
+        if (string.IsNullOrEmpty(apiPath))
+        {
+            Debug.LogError("FeedManager: API path not found. Cannot fetch inventory.");
+            yield break;
+        }
+
+        string url = apiPath + "/get_player_inventory.php";
+
+        var requestData = new GetInventoryRequest { player_id = this.player_id };
+        string json = JsonUtility.ToJson(requestData);
+
+        Debug.Log($"FeedManager: Fetching inventory with JSON body: {json}");
+
+        using (var request = new UnityWebRequest(url, "POST"))
+        {
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            yield return request.SendWebRequest();
+
+            _currentFeedCount = 0; // Default to 0 before processing the response
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                var response = JsonUtility.FromJson<GetInventoryResponse>(request.downloadHandler.text);
+                if (response.status_code == 0 && response.items != null)
                 {
-                    GetInventoryResponse response = JsonUtility.FromJson<GetInventoryResponse>(jsonResponse);
-
-                    if (response.status_code == 0) // Success status code from PHP
+                    foreach (var item in response.items)
                     {
-                        int feedFound = 0;
-                        if (response.items != null) //
+                        if (item.item_id == FEED_ITEM_ID)
                         {
-                            foreach (InventoryItem item in response.items) //
-                            {
-                                if (item.item_id == FEED_ITEM_ID) //
-                                {
-                                    feedFound = item.quantity;
-                                    break;
-                                }
-                            }
+                            _currentFeedCount = item.quantity;
+                            break;
                         }
-                        CurrentFeedCount = feedFound; // This will trigger UI update
-                        Debug.Log($"[InventoryAndFeedManager] Player {playerId} has {CurrentFeedCount} feed items.");
-                    }
-                    else
-                    {
-                        Debug.LogError($"[InventoryAndFeedManager] Backend Error: {response.error_message} (Status Code: {response.status_code})"); //
                     }
                 }
-                catch (System.Exception e)
-                {
-                    Debug.LogError($"[InventoryAndFeedManager] Failed to parse inventory JSON: {e.Message}\nRaw Response: {jsonResponse}");
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Attempts to consume a feed item.
-    /// This will update the local count and trigger a backend update.
-    /// </summary>
-    /// <param name="amount">The number of feed items to use. Default is 1.</param>
-    /// <returns>True if feed was successfully consumed, false otherwise (e.g., not enough feed).</returns>
-    public bool UseFeed(int amount = 1)
-    {
-        if (_currentFeedCount >= amount) // Use internal field to avoid recursive UI update during check
-        {
-            CurrentFeedCount -= amount; // Use property to trigger UI update
-
-            // Get current player ID for the update request
-            int currentPlayerId;
-            if (PlayerDataManager.IsDataLoaded && PlayerDataManager.CurrentPlayerMainData != null) //
-            {
-                currentPlayerId = PlayerDataManager.CurrentPlayerMainData.player_id; //
+                Debug.Log($"FeedManager: Inventory fetched for player {this.player_id}. Player has {_currentFeedCount} feed items.");
             }
             else
             {
-                currentPlayerId = debug_player_id; // Fallback to debug ID if player data is missing
-                Debug.LogWarning($"[InventoryAndFeedManager] PlayerDataManager data not available for update. Using debug player ID: {currentPlayerId}");
+                Debug.LogError($"FeedManager: Failed to fetch inventory. Error: {request.error}");
             }
-
-            // Start the coroutine to update the database
-            StartCoroutine(SendUpdateInventoryRequest(currentPlayerId, FEED_ITEM_ID, CurrentFeedCount));
-
-            return true;
-        }
-        else
-        {
-            Debug.LogWarning("[InventoryAndFeedManager] Not enough feed to consume.");
-            return false;
+            UpdateFeedCountUI();
         }
     }
 
     /// <summary>
-    /// Updates the UI TextMeshPro element with the current feed count.
+    /// Updates the UI text for the feed count.
     /// </summary>
-    private void UpdateFeedDisplay()
+    private void UpdateFeedCountUI()
     {
         if (feedCountText != null)
         {
-            feedCountText.text = CurrentFeedCount.ToString();
-        }
-        else
-        {
-            Debug.LogWarning("[InventoryAndFeedManager] Feed Count Text (TextMeshProUGUI) is not assigned in the Inspector.");
+            feedCountText.text = _currentFeedCount.ToString();
         }
     }
 
-    /// <summary>
-    /// Coroutine for sending a request to update the inventory in the database.
-    /// </summary>
-    /// <param name="playerId">The ID of the player.</param>
-    /// <param name="itemId">The ID of the item to update (feed item ID).</param>
-    /// <param name="newQuantity">The new quantity of the item.</param>
-    private IEnumerator SendUpdateInventoryRequest(int playerId, int itemId, int newQuantity)
+    #region Data Transfer Classes
+    // --- Helper classes for creating JSON to send to the server ---
+
+    [Serializable]
+    private class UpdatePetHungerRequest
     {
-        if (string.IsNullOrEmpty(_updateInventoryUrl))
-        {
-            Debug.LogError("[InventoryAndFeedManager] Update Inventory URL is not set. Cannot update inventory. Check ServerConfig loading.");
-            yield break;
-        }
-
-        using (UnityWebRequest www = new UnityWebRequest(_updateInventoryUrl, "POST"))
-        {
-            // Prepare JSON payload for the POST request
-            // This structure should match what your update_inventory.php expects.
-            string jsonData = JsonUtility.ToJson(new { player_id = playerId, item_id = itemId, new_quantity = newQuantity });
-            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
-
-            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            www.SetRequestHeader("Content-Type", "application/json");
-
-            Debug.Log($"[InventoryAndFeedManager] Sending DB update request for Player: {playerId}, Item ID: {itemId}, New Quantity: {newQuantity}. Body: {jsonData}");
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError($"[InventoryAndFeedManager] Error updating inventory in DB: {www.error}");
-            }
-            else
-            {
-                string responseText = www.downloadHandler.text;
-                Debug.Log($"[InventoryAndFeedManager] DB Update response: {responseText}");
-                try
-                {
-                    // Assuming update_inventory.php returns a simple status_code and error_message
-                    SimpleBackendResponse updateResponse = JsonUtility.FromJson<SimpleBackendResponse>(responseText);
-                    if (updateResponse.status_code == 0)
-                    {
-                        Debug.Log($"[InventoryAndFeedManager] Database update successful.");
-                    }
-                    else
-                    {
-                        Debug.LogError($"[InventoryAndFeedManager] Database update failed: {updateResponse.error_message} (Code: {updateResponse.status_code})");
-                    }
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError($"[InventoryAndFeedManager] Failed to parse DB update response: {e.Message}\nRaw Response: {responseText}");
-                }
-            }
-        }
+        public int pet_id;
+        public int hunger;
+        public string last_fed;
     }
-    // --- Data Structures for InventoryAndFeedManager specific responses ---
-    // These classes are defined here, but if you have a shared 'DataModels.cs' or similar file,
-    // it's better to move them there.
 
-    /// <summary>
-    /// Represents the JSON structure for a simple backend response (e.g., for updates).
-    /// </summary>
-    [System.Serializable]
-    private class SimpleBackendResponse
+    [Serializable]
+    private class UpdateInventoryRequest
     {
-        public int status_code;
-        public string error_message;
+        public int player_id;
+        public int item_id;
+        public int quantity;
     }
 
-    /// <summary>
-    /// Data class to deserialize the JSON response from get_player_inventory.php.
-    /// </summary>
-    [System.Serializable]
+    // --- Helper classes for reading JSON from the server ---
+
+    [Serializable]
+    private class GetInventoryRequest
+    {
+        public int player_id;
+    }
+
+    [Serializable]
     private class GetInventoryResponse
     {
-        public int status_code; //
-        public string error_message; //
-        public InventoryItem[] items; //
+        public int status_code;
+        public InventoryItem[] items;
     }
-}
 
+    [Serializable]
+    private class InventoryItem
+    {
+        public int item_id;
+        public int quantity;
+    }
+    #endregion
+}

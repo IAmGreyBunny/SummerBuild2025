@@ -204,9 +204,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 2
-  maxWalkTime: 6
+  maxWalkTime: 2
   idleTime: 3
-  maxDistanceFromCenter: 10
+  maxDistanceFromCenter: 5
 --- !u!114 &1383043863795540593
 MonoBehaviour:
   m_ObjectHideFlags: 0

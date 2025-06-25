@@ -7,8 +7,7 @@ using UnityEngine.Events;
 using System;
 
 /// <summary>
-/// Fetches pet data from the server, handles server-specific data formats,
-/// and populates the clean data into the GameDataManager.
+/// Fetches pet data from the server and populates the GameDataManager.
 /// </summary>
 public class PetManager : MonoBehaviour
 {
@@ -23,14 +22,8 @@ public class PetManager : MonoBehaviour
             return;
         }
 
-        if (PlayerAuthSession.IsLoggedIn)
-        {
-            ownerId = PlayerAuthSession.PlayerId;
-        }
-        else
-        {
-            Debug.LogError("Player not logged in, using default ID: " + ownerId);
-        }
+        if (PlayerAuthSession.IsLoggedIn) { ownerId = PlayerAuthSession.PlayerId; }
+        else { Debug.LogError("Player not logged in, using default ID: " + ownerId); }
 
         StartCoroutine(Co_FetchPets());
     }
@@ -57,38 +50,24 @@ public class PetManager : MonoBehaviour
             else
             {
                 Debug.Log("API Call Successful! Response: " + request.downloadHandler.text);
-
                 try
                 {
-                    // --- FIX ---
-                    // Parse the JSON into our DTO that expects strings.
                     GetPetsResponseData_DTO responseDTO = JsonUtility.FromJson<GetPetsResponseData_DTO>(request.downloadHandler.text);
-
-                    // Check the string status code
                     if (responseDTO.status_code == "0" || responseDTO.status_code == "200")
                     {
-                        // Create a new, clean list for our final PetData
                         List<PetData> cleanPetsList = new List<PetData>();
-
-                        // Loop through each pet from the server
                         foreach (var petDTO in responseDTO.pets)
                         {
-                            // Convert the string data into a clean PetData object with integers
-                            PetData cleanPet = new PetData
+                            cleanPetsList.Add(new PetData
                             {
                                 pet_id = int.Parse(petDTO.pet_id),
                                 owner_id = int.Parse(petDTO.owner_id),
                                 pet_type = int.Parse(petDTO.pet_type),
                                 hunger = int.Parse(petDTO.hunger),
                                 affection = int.Parse(petDTO.affection)
-                            };
-                            cleanPetsList.Add(cleanPet);
+                            });
                         }
-
-                        // Store the final, clean list in the GameDataManager
                         GameDataManager.Instance.ownerPets = cleanPetsList;
-
-                        Debug.Log("Pet data parsed and updated successfully. Invoking OnPetsUpdated event.");
                         OnPetsUpdated.Invoke();
                     }
                     else
@@ -98,36 +77,16 @@ public class PetManager : MonoBehaviour
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError($"Failed to parse JSON response. Is the format correct? Error: {e.Message}");
+                    Debug.LogError($"Failed to parse JSON response. Error: {e.Message}");
                 }
             }
         }
     }
-
     #region Data Transfer Classes
-    // --- FIX ---
-    // These new DTO (Data Transfer Object) classes match your server's JSON exactly (with strings).
     [System.Serializable]
-    private class PetData_DTO
-    {
-        public string pet_id;
-        public string owner_id;
-        public string pet_type;
-        public string hunger;
-        public string affection;
-        // The DTO can also include fields you don't use, like last_fed, without causing issues.
-        public string last_fed;
-    }
-
+    private class PetData_DTO { public string pet_id, owner_id, pet_type, hunger, affection, last_fed; }
     [System.Serializable]
-    private class GetPetsResponseData_DTO
-    {
-        public string status_code;
-        public string error_message;
-        public List<PetData_DTO> pets;
-    }
-
-    // This is the original request class, it's still correct.
+    private class GetPetsResponseData_DTO { public string status_code, error_message; public List<PetData_DTO> pets; }
     [System.Serializable]
     private class GetPetsRequestData { public int owner_id; }
     #endregion

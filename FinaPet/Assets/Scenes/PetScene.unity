@@ -829,6 +829,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bcbf5539519ee64fa136063b230a47e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  toggle: {fileID: 0}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1518,7 +1519,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   petSpawner: {fileID: 1107327503}
-  ownerId: 1
+  ownerId: 10
   noPetsPopupPanel: {fileID: 121183180}
   shopSceneName: Shop
 --- !u!1 &1186342593

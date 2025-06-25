@@ -2,76 +2,62 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Manages the pet's attention level, including the UI slider and interactions.
+/// Manages the pet's affection UI slider. It initializes the slider's value
+/// based on the selected pet's data and provides methods for other scripts
+/// to interact with the affection value.
 /// </summary>
 public class AttentionManager : MonoBehaviour
 {
     [Header("Slider Reference")]
     public Slider attentionSlider;
 
-    [Header("Attention Settings")]
-    public float decreaseIntervalInSeconds = 20f; // Decrease attention more frequently than hunger
-    public float decreaseAmount = 5f;
-    public float petAmount = 15f; // How much attention increases when petted
-
-    private float nextDecreaseTime;
-
     void Start()
     {
-        // --- This logic gets the initial value from the data transfer ---
-        // 1. Check if the GameDataManager and its selected pet data exist.
+        // Initialize the affection slider's value from the persistent data manager.
         if (GameDataManager.Instance != null && GameDataManager.Instance.selectedPet != null)
         {
-            // 2. Get the affection value from the transferred data.
             int initialAffection = GameDataManager.Instance.selectedPet.affection;
 
-            // 3. Set the slider's properties.
-            // Assuming your affection value from the server is 0-100.
+            // Set slider properties. Assuming affection is always 0-100.
             attentionSlider.minValue = 0;
             attentionSlider.maxValue = 100;
             attentionSlider.value = initialAffection;
 
-            Debug.Log($"Attention slider initialized with value: {initialAffection}");
+            Debug.Log($"AttentionManager: Affection slider initialized with value: {initialAffection}");
         }
         else
         {
-            // Fallback for when you test the scene directly.
-            Debug.LogWarning("No pet data found. Initializing attention to a default value of 100.");
+            // Fallback for testing or if data is missing.
+            Debug.LogWarning("AttentionManager: No pet data found in GameDataManager. Initializing affection to a default of 0.");
             attentionSlider.minValue = 0;
             attentionSlider.maxValue = 100;
-            attentionSlider.value = 100; // Full attention at start
-        }
-        // --- End of initialization logic ---
-
-        // Set the timer for the first decrease.
-        nextDecreaseTime = Time.time + decreaseIntervalInSeconds;
-    }
-
-    void Update()
-    {
-        // Check if it's time to decrease the attention level.
-        if (Time.time >= nextDecreaseTime)
-        {
-            DecreaseAttention();
-            nextDecreaseTime = Time.time + decreaseIntervalInSeconds;
+            attentionSlider.value = 0;
         }
     }
 
     /// <summary>
-    /// Reduces the attention slider's value over time.
+    /// Gets the current integer value of the affection slider.
     /// </summary>
-    void DecreaseAttention()
+    public int GetCurrentAffection()
     {
-        attentionSlider.value = Mathf.Max(attentionSlider.minValue, attentionSlider.value - decreaseAmount);
-        Debug.Log("Attention decreased to: " + attentionSlider.value);
+        return (int)attentionSlider.value;
     }
 
     /// <summary>
-    /// Public method to be called by a "Pet" button to increase attention.
+    /// Sets the affection slider to a new value, clamped between its min and max.
     /// </summary>
-    public void PetTheAnimal()
+    /// <param name="newAffection">The new affection value.</param>
+    public void SetAffection(int newAffection)
     {
-        attentionSlider.value = Mathf.Min(attentionSlider.maxValue, attentionSlider.value + petAmount);
-        Debug.Log("Petting the animal. Attention is now: " + attentionSlider.value);
+        attentionSlider.value = Mathf.Clamp(newAffection, attentionSlider.minValue, attentionSlider.maxValue);
+    }
+
+    /// <summary>
+    /// Checks if the affection slider is at its maximum value.
+    /// </summary>
+    /// <returns>True if affection is full, false otherwise.</returns>
+    public bool IsAffectionFull()
+    {
+        return attentionSlider.value >= attentionSlider.maxValue;
     }
 }
