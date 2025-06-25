@@ -22,7 +22,7 @@ $pet_id = $json['pet_id'] ?? '';
 //Construct query
 if($pet_id)
 {
-	$dropPetQuery = "DROP * FROM pets WHERE pet_id='" . $pet_id . "';";
+	$dropPetQuery = "DELETE * FROM pets WHERE pet_id=" . $pet_id . ";";
 }
 else
 {
