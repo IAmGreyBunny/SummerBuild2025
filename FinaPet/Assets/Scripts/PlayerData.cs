@@ -193,19 +193,4 @@ public static class PlayerDataManager
             }
         }
     }
-
-    // Change CurrentPlayerMainData 
-    public static bool changeCurrentPlayerCoin(int coin_change)
-    {
-        if(CurrentPlayerMainData.coin + coin_change < 0)
-        {
-            return false;
-        }
-        else
-        {
-            CurrentPlayerMainData.coin += coin_change;
-            UpdatePlayerDataOnServer(CurrentPlayerMainData.player_id, CurrentPlayerMainData.coin, CurrentPlayerMainData.avatar_sprite_id);
-            return true;
-        }
-    }
 }

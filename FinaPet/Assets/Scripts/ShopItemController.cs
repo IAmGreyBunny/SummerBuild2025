@@ -6,20 +6,28 @@ public class ShopItemController : MonoBehaviour
 
     public void PurchaseItem()
     {
-        if (PlayerDataManager.changeCurrentPlayerCoin(-(shopItem.item_price)))
+        if (PlayerDataManager.CurrentPlayerMainData.coin - shopItem.item_price >= 0)
         {
-            if(shopItem.item_type == "consumable")
+            PlayerDataManager.CurrentPlayerMainData.coin -= shopItem.item_price;
+            if (shopItem.item_type == "consumable")
             {
                 // Code to add into inventory
+                Debug.Log("Consumable purchased");
             }
             else if(shopItem.item_type == "pet")
             {
                 // Code to create pet
+                Debug.Log("Pet purchased");
             }
+            StartCoroutine(PlayerDataManager.UpdatePlayerDataOnServer(
+                PlayerDataManager.CurrentPlayerMainData.player_id,
+                PlayerDataManager.CurrentPlayerMainData.coin,
+                PlayerDataManager.CurrentPlayerMainData.avatar_sprite_id
+                ));
         }
         else
         {
-            // Code to show error or watever
+            Debug.Log("Unable to purchase anything");
         }
     }
 }
