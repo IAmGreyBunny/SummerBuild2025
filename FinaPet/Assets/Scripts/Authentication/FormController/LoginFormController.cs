@@ -54,8 +54,10 @@ public class LoginFormController : MonoBehaviour
             if (loginResponse.status_code == 0)
             {
                 Debug.Log("Login Successful");
-                SceneManager.LoadScene("MainMenu");
                 PlayerAuthSession.StartSession(loginResponse.player_data.username, loginResponse.player_data.player_id);
+                // Wait for the data fetch to complete before changing scenes
+                yield return PlayerDataManager.FetchPlayerData(loginResponse.player_data.player_id);
+                SceneManager.LoadScene("MainMenu");
             }
             else
             {

@@ -1,15 +1,16 @@
+using System;
+using System.Collections;
 using UnityEngine;
-using TMPro; // Required for TextMeshProUGUI
-using System.Collections; // Required for Coroutines
-using UnityEngine.Networking; // Required for UnityWebRequest
-using System.Text; // Required for Encoding
+using UnityEngine.Networking;
+using TMPro;
+using System.Text;
+using System.Collections.Generic; // Make sure this is included for List
 
-/// <summary>
-/// Loads and displays player profile data (username, coins, pet count)
-/// on the profile page.
-/// </summary>
 public class ProfilePageDataLoader : MonoBehaviour
 {
+    // A static event that other scripts can subscribe to.
+    public static event Action OnProfileDataLoaded;
+
     [Header("UI Text References")]
     [Tooltip("TextMeshProUGUI component to display the player's username.")]
     public TextMeshProUGUI usernameText;
@@ -20,21 +21,18 @@ public class ProfilePageDataLoader : MonoBehaviour
 
     [Header("Debug Settings")]
     [Tooltip("The ID of the player to use when PlayerAuthSession indicates no login.")]
-    public int debugPlayerId = 1; // Default for testing if not logged in
+    public int debugPlayerId = 1;
 
-    // Private variable to store the fetched pet count
     private int _fetchedPetsCount = 0;
 
-    void OnEnable() // Using OnEnable to refresh data every time the object becomes active (e.g., scene loads)
+    void OnEnable()
     {
         // Sanity checks for UI references
         if (usernameText == null || coinsText == null || petsCountText == null)
         {
-            Debug.LogError("ProfilePageDataLoader: One or more UI Text references are not assigned! Please assign them in the Inspector.", this);
+            Debug.LogError("ProfilePageDataLoader: One or more UI Text references are not assigned!", this);
             return;
         }
-
-        // Initiate data loading
         LoadProfileData();
     }
 
@@ -43,35 +41,35 @@ public class ProfilePageDataLoader : MonoBehaviour
     /// </summary>
     public void LoadProfileData()
     {
-        int playerIdToFetch;
-        if (PlayerAuthSession.IsLoggedIn)
-        {
-            playerIdToFetch = PlayerAuthSession.PlayerId;
-            Debug.Log($"ProfilePageDataLoader: Loading profile data for logged-in player ID: {playerIdToFetch}");
-        }
-        else
-        {
-            playerIdToFetch = debugPlayerId;
-            Debug.LogWarning($"ProfilePageDataLoader: Player not logged in. Using debugPlayerId: {playerIdToFetch}");
-        }
-
+        int playerIdToFetch = PlayerAuthSession.IsLoggedIn ? PlayerAuthSession.PlayerId : debugPlayerId;
+        Debug.Log($"ProfilePageDataLoader: Starting data load for player ID: {playerIdToFetch}");
         StartCoroutine(Co_LoadAllProfileData(playerIdToFetch));
     }
 
     /// <summary>
-    /// Coroutine to load all profile-related data concurrently or in sequence.
+    /// Coroutine to load all profile-related data in a specific order.
     /// </summary>
     private IEnumerator Co_LoadAllProfileData(int playerId)
     {
-        // --- 1. Fetch Player Main Data (Coins) ---
-        // PlayerDataManager.FetchPlayerData also resets previous errors/flags internally.
-        yield return StartCoroutine(PlayerDataManager.FetchPlayerData(playerId));
+        // Step 1: Fetch the core player data and WAIT for it to complete.
+        yield return PlayerDataManager.FetchPlayerData(playerId);
 
-        // --- 2. Fetch Pet Count ---
-        yield return StartCoroutine(Co_FetchPetCount(playerId));
+        // Step 2: Fetch the pet count (only runs after player data is fetched).
+        yield return Co_FetchPetCount(playerId);
 
-        // --- 3. Update UI based on fetched data ---
+        // Step 3: Update this script's own UI elements.
         UpdateProfileUI();
+
+        // Step 4: Check if the primary data load was successful, then broadcast the event.
+        if (PlayerDataManager.IsDataLoaded)
+        {
+            Debug.Log("ProfilePageDataLoader: Data load successful. Broadcasting OnProfileDataLoaded event.");
+            OnProfileDataLoaded?.Invoke();
+        }
+        else
+        {
+            Debug.LogError("ProfilePageDataLoader: Player data failed to load. The OnProfileDataLoaded event will NOT be broadcast.");
+        }
     }
 
     /// <summary>
@@ -80,19 +78,20 @@ public class ProfilePageDataLoader : MonoBehaviour
     private IEnumerator Co_FetchPetCount(int ownerId)
     {
         _fetchedPetsCount = 0; // Reset count before fetching
-
-        // Reuse data structures from OwnedPetsManager
-        OwnedPetsManager.GetPetsRequestData requestData = new OwnedPetsManager.GetPetsRequestData
-        {
-            owner_id = ownerId
-        };
+        var requestData = new OwnedPetsManager.GetPetsRequestData { owner_id = ownerId };
         string jsonRequestBody = JsonUtility.ToJson(requestData);
-        Debug.Log($"ProfilePageDataLoader: Sending request to get pet count for owner ID: {ownerId}, Body: {jsonRequestBody}");
+        string apiPath = ServerConfig.LoadFromFile("Config/ServerConfig.json")?.GetApiPath();
 
-        string apiPath = ServerConfig.LoadFromFile("Config/ServerConfig.json").GetApiPath();
+        if (string.IsNullOrEmpty(apiPath))
+        {
+            Debug.LogError("ProfilePageDataLoader: Could not load server config for pet count fetch.");
+            yield break;
+        }
+
         string fullUrl = apiPath + "/get_pets.php";
+        Debug.Log($"ProfilePageDataLoader: Sending request to get pet count for owner ID: {ownerId}");
 
-        using (UnityWebRequest request = new UnityWebRequest(fullUrl, "POST"))
+        using (var request = new UnityWebRequest(fullUrl, "POST"))
         {
             byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonRequestBody);
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -101,40 +100,18 @@ public class ProfilePageDataLoader : MonoBehaviour
 
             yield return request.SendWebRequest();
 
-            if (request.result != UnityWebRequest.Result.Success)
+            if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.LogError($"ProfilePageDataLoader: Failed to fetch pet count! Error: {request.error}");
-                // Keep _fetchedPetsCount at 0 or set to a specific error value
+                var response = JsonUtility.FromJson<OwnedPetsManager.GetPetsResponseData>(request.downloadHandler.text);
+                if (response.status_code == 0)
+                {
+                    _fetchedPetsCount = response.pets?.Count ?? 0;
+                    Debug.Log($"ProfilePageDataLoader: Successfully fetched pet count: {_fetchedPetsCount}");
+                }
             }
             else
             {
-                Debug.Log($"ProfilePageDataLoader: Pet count API response: {request.downloadHandler.text}");
-                try
-                {
-                    OwnedPetsManager.GetPetsResponseData response = JsonUtility.FromJson<OwnedPetsManager.GetPetsResponseData>(request.downloadHandler.text);
-
-                    if (response.status_code == 0)
-                    {
-                        if (response.pets != null)
-                        {
-                            _fetchedPetsCount = response.pets.Count;
-                            Debug.Log($"ProfilePageDataLoader: Successfully fetched pet count: {_fetchedPetsCount}");
-                        }
-                        else
-                        {
-                            _fetchedPetsCount = 0;
-                            Debug.LogWarning("ProfilePageDataLoader: Pet count response 'pets' array was null.");
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogError($"ProfilePageDataLoader: Pet count API returned an error: {response.error_message} (Status Code: {response.status_code})");
-                    }
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError($"ProfilePageDataLoader: Failed to parse pet count JSON: {e.Message}\nRaw Response: {request.downloadHandler.text}");
-                }
+                Debug.LogError($"ProfilePageDataLoader: Failed to fetch pet count! Error: {request.error}");
             }
         }
     }
@@ -144,27 +121,11 @@ public class ProfilePageDataLoader : MonoBehaviour
     /// </summary>
     private void UpdateProfileUI()
     {
-        // Update Username
-        // Assuming PlayerAuthSession has a static property for username (e.g., PlayerAuthSession.Username)
-        // You'll need to ensure PlayerAuthSession exposes the username if it doesn't already.
-        // If not, you might need to fetch it as part of player_data or elsewhere.
-        if (PlayerAuthSession.IsLoggedIn)
-        {
-            // Placeholder: Replace with actual username from PlayerAuthSession if it exists
-            // For now, if no explicit username, we'll indicate if logged in.
-            usernameText.text = PlayerAuthSession.Username;
-            // Or if PlayerAuthSession provides username: usernameText.text = PlayerAuthSession.Username;
-        }
-        else
-        {
-            usernameText.text = "Guest " + debugPlayerId;
-        }
+        usernameText.text = PlayerAuthSession.IsLoggedIn ? PlayerAuthSession.Username : "Guest " + debugPlayerId;
 
-
-        // Update Coins
-        if (PlayerDataManager.IsDataLoaded && PlayerDataManager.CurrentPlayerMainData != null)
+        if (PlayerDataManager.IsDataLoaded)
         {
-            coinsText.text ="$" + PlayerDataManager.CurrentPlayerMainData.coin.ToString();
+            coinsText.text = "$" + PlayerDataManager.CurrentPlayerMainData.coin.ToString();
         }
         else
         {
@@ -172,7 +133,6 @@ public class ProfilePageDataLoader : MonoBehaviour
             Debug.LogWarning("ProfilePageDataLoader: Player data not loaded or is null for coins display.");
         }
 
-        // Update Pet Count
         petsCountText.text = _fetchedPetsCount.ToString();
     }
 }
