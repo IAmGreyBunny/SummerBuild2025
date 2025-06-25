@@ -19,7 +19,7 @@ if ($json === null) {
 }
 
 $owner_id = $json['owner_id'] ?? '';
-if (!$pet_id) {
+if (!$owner_id) {
 	echo json_encode([
 		"status_code" => 10,
 		"error_message" => "player_id not provided"
@@ -27,23 +27,23 @@ if (!$pet_id) {
 	exit();
 }
 
-$affection = $json['affection'] ?? '';
-if (!$affection) {
+$pet_type = $json['pet_type'] ?? '';
+if (!$pet_type) {
 	echo json_encode([
-		"status_code" => 22,
-		"error_message" => "affection value not provided"
+		"status_code" => 24,
+		"error_message" => "pet_type value not provided"
 	]);
 	exit();
 }
 
 // Query for player_data
-$updatePetAffectionQuery = "UPDATE pets SET affection = '" . $affection .  "' WHERE pet_id = '" . $pet_id . "';";
-$updatePetAffectionQueryResult = mysqli_query($con, $updatePetAffectionQuery);
+$insertPetQuery = "INSERT INTO pets (owner_id, pet_type) VALUES ('" . $owner_id . "', '" . $pet_type . "');";
+$insertPetQueryResult = mysqli_query($con, $insertPetQuery);
 
-if (!$updatePetAffectionQueryResult) {
+if (!$insertPetQueryResult) {
 	echo json_encode([
-		"status_code" => 23,
-		"error_message" => "Update Pet Affection Query Failed"
+		"status_code" => 25,
+		"error_message" => "Insert Pet Query Failed"
 	]);
 	exit();
 }
