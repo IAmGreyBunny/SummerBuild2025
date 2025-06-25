@@ -29,7 +29,11 @@ if (!$player_id) {
 
 // --- Database Query (Refactored to match your style) ---
 // This query now uses the direct mysqli_query method for consistency with your other scripts.
+<<<<<<< Updated upstream
 $getSpendingQuery = "SELECT daily_spending, record_date FROM player_daily_tracker WHERE player_id = '" . $player_id . "';";
+=======
+$getSpendingQuery = "SELECT daily_spending, last_updated FROM player_daily_tracker WHERE player_id = '" . $player_id . "';";
+>>>>>>> Stashed changes
 $getSpendingQueryResult = mysqli_query($con, $getSpendingQuery);
 
 if (!$getSpendingQueryResult) {
