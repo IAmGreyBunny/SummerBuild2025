@@ -4,7 +4,7 @@ public class ShopItemController : MonoBehaviour
 {
     public ShopItem shopItem;
 
-    public bool PurchaseItem()
+    public void PurchaseItem()
     {
         if (PlayerDataManager.changeCurrentPlayerCoin(-(shopItem.item_price)))
         {
@@ -16,11 +16,10 @@ public class ShopItemController : MonoBehaviour
             {
                 // Code to create pet
             }
-            return true;
         }
         else
         {
-            return false;
+            // Code to show error or watever
         }
     }
 }
