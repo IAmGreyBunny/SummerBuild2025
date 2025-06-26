@@ -643,7 +643,7 @@ MonoBehaviour:
   - itemId: 2
     itemSprite: {fileID: 1497166947140476013, guid: a2aac24349bc4b84bab3f970b3511e36, type: 3}
   - itemId: 3
-    itemSprite: {fileID: 0}
+    itemSprite: {fileID: -3302754663949283801, guid: 10850dc117295824dbf160ff73ec3e8d, type: 3}
   - itemId: 4
     itemSprite: {fileID: 6188544173058632022, guid: e22d84ec69c448b4cbaae9d979c6b410, type: 3}
   itemImageRelativePath: Box Body/Image
