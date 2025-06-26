@@ -156,7 +156,7 @@ public class FeedManager : MonoBehaviour
         {
             player_id = this.player_id, // Use the player_id determined at Start
             item_id = FEED_ITEM_ID,
-            quantity = newFeedCount
+            quantity = -1
         };
         string inventoryJson = JsonUtility.ToJson(inventoryRequestData);
 
