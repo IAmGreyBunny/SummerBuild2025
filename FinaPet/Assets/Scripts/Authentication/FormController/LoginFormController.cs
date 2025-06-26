@@ -10,12 +10,28 @@ public class LoginFormController : MonoBehaviour
 {
     private TMP_InputField _usernameInput;
     private TMP_InputField _passwordInput;
+    private TMP_Text _errorText;
 
     public void Awake()
     {
         Debug.Log("Parent: " + transform.parent?.name);
         _usernameInput = transform.parent.Find("UsernameTextInput/InputField").GetComponent<TMP_InputField>();
         _passwordInput = transform.parent.Find("PasswordTextInput/InputField").GetComponent<TMP_InputField >();
+        //_errorText = transform.parent.Find("ErrorMessagePanel/ErrorMessage").GetComponent<TMP_Text>();
+
+        Transform errorTextTransform = transform.parent.Find("ErrorMessagePanel/ErrorMessage");
+        if (errorTextTransform != null)
+        {
+            _errorText = errorTextTransform.GetComponent<TMP_Text>();
+            if (_errorText == null)
+            {
+                Debug.LogError("[LoginFormController] ErrorText GameObject found, but no TMP_Text component attached.");
+            }
+        }
+        else
+        {
+            Debug.LogError("[LoginFormController] ErrorText GameObject not found as a child of the parent. Make sure your UI hierarchy is correct.");
+        }
     }
 
     public void CallLogin()
@@ -62,7 +78,17 @@ public class LoginFormController : MonoBehaviour
             else
             {
                 Debug.Log("Login Failed with message: " + loginResponse.error_message);
+                SetErrorText("Login Failed! please Check Username and Password");
             }
+        }
+    }
+
+    private void SetErrorText(string message)
+    {
+        if (_errorText != null)
+        {
+            _errorText.text = message;
+            //_errorText.color = Color.red; // Always red for errors
         }
     }
 

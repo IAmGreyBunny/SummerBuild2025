@@ -5,7 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI; // Required for Image component
-using System.IO; // Required for File.Exists and File.ReadAllText in ServerConfig context
+using System.IO;
+using JetBrains.Annotations; // Required for File.Exists and File.ReadAllText in ServerConfig context
 
 public class ShopController : MonoBehaviour
 {
@@ -140,11 +141,12 @@ public class ShopController : MonoBehaviour
                 {
                     Debug.Log($"[ShopController] Number of items fetched: {getShopItemsResponse.items.Length}");
 
-                    foreach (_ShopItem item in getShopItemsResponse.items) //
+                    foreach (ShopItem item in getShopItemsResponse.items) //
                     {
                         GameObject currentShopCard = Instantiate(shopItemCardPrefab, shopItemParent);
                         // Find the TextMeshPro component for the item name and price
                         currentShopCard.transform.Find("Box Body").Find("Label").GetComponent<TMP_Text>().text = $"{item.item_name} - ${item.item_price}"; //
+                        currentShopCard.transform.Find("ShopItemController").GetComponent<ShopItemController>().shopItem = item;
 
                         // --- NEW: Set the item image ---
                         // Find the Image component using the specified relative path.
@@ -206,15 +208,15 @@ public class ShopController : MonoBehaviour
     {
         public int status_code; //
         public string error_message; //
-        public _ShopItem[] items; //
+        public ShopItem[] items; //
     }
 
-    [Serializable]
-    private class _ShopItem
+    public GameObject moneyLabel;
+    private void Update()
     {
-        public int item_id; //
-        public string item_name; //
-        public int item_price; //
-        // Add other properties from your PHP response if needed (e.g., description, image_url etc.)
+        if(moneyLabel.GetComponent<TMP_Text>().text != "$"+PlayerDataManager.CurrentPlayerMainData.coin.ToString())
+        {
+            moneyLabel.GetComponent<TMP_Text>().text = "$"+PlayerDataManager.CurrentPlayerMainData.coin.ToString();
+        }
     }
 }
