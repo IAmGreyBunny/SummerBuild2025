@@ -28,7 +28,7 @@ public class RegistrationFormController : MonoBehaviour
         // NEW: Get reference to the ErrorText GameObject
         // Assuming ErrorText is a direct child of the parent of RegistrationFormController,
         // or you might need to adjust this path based on your UI hierarchy.
-        Transform errorTextTransform = transform.parent.Find("ErrorMessagePanel/ErrorText");
+        Transform errorTextTransform = transform.parent.Find("ErrorMessagePanel/ErrorMessage");
         if (errorTextTransform != null)
         {
             _errorText = errorTextTransform.GetComponent<TMP_Text>();
@@ -264,7 +264,10 @@ public class RegistrationFormController : MonoBehaviour
         {
             _errorText.text = message;
             // Optionally change color based on success/error
-            _errorText.color = isSuccess ? Color.green : Color.red;
+            if (isSuccess)
+            {
+                _errorText.color = Color.green;
+            }
         }
     }
 

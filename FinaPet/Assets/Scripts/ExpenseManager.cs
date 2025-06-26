@@ -5,7 +5,9 @@ using System.Collections;
 using System.Text;
 using System;
 using TMPro;
-using UnityEngine.SceneManagement; // This line is crucial for SceneManager to be recognized
+// UnityEngine.SceneManagement is no longer strictly needed here if GoToPreviousScene uses SceneController.Instance.GoBack() exclusively.
+// However, it's kept for potential future use or if a fallback to direct SceneManager.LoadScene is desired in error cases.
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 public class ExpenseManager : MonoBehaviour
@@ -27,6 +29,7 @@ public class ExpenseManager : MonoBehaviour
 
     [Header("Player and Server Config")]
     public int playerId = 1;
+    // LAST_SUBMISSION_DATE_KEY will now only be used for checking same-day submission locally.
     private const string LAST_SUBMISSION_DATE_KEY = "LastExpenseSubmissionDate";
 
     private float _fetchedMonthlyIncome = 0f;
@@ -55,6 +58,10 @@ public class ExpenseManager : MonoBehaviour
         CheckForDailySubmission();
     }
 
+    /// <summary>
+    /// Checks if a daily spending submission has already been made today using PlayerPrefs.
+    /// This is a client-side check to prevent multiple submissions in one day.
+    /// </summary>
     private void CheckForDailySubmission()
     {
         string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
@@ -66,6 +73,9 @@ public class ExpenseManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called when the submit button is clicked. Validates input, fetches data, and shows confirmation popup.
+    /// </summary>
     private void OnSubmitClicked()
     {
         if (string.IsNullOrEmpty(expenseInputField.text) || !float.TryParse(expenseInputField.text, out _))
@@ -78,6 +88,9 @@ public class ExpenseManager : MonoBehaviour
         StartCoroutine(Co_PreCalculateRewardsAndShowConfirmation());
     }
 
+    /// <summary>
+    /// Coroutine to fetch necessary data, pre-calculate rewards, and then display the confirmation popup.
+    /// </summary>
     private IEnumerator Co_PreCalculateRewardsAndShowConfirmation()
     {
         submitButton.interactable = false;
@@ -93,10 +106,13 @@ public class ExpenseManager : MonoBehaviour
         SetStatusText("Loading...", true);
 
         yield return Co_FetchMonthlyIncome();
+        // New: Fetch spending records from DB to check for previous day's login
         yield return Co_CheckPreviousDaySpendingFromDB();
 
+        // Calculate potential coins using the result from DB check
         _potentialCoinsEarned = CalculateCoinsEarned(dailySpending, _fetchedMonthlyIncome, _hasLoggedPreviousDayFromDB);
 
+        // Update the confirmation text
         if (confirmSubmitText != null)
         {
             confirmSubmitText.text = $"Are you sure you want to log spending of ${dailySpending:F2}? You will earn {_potentialCoinsEarned} coins.";
@@ -107,6 +123,10 @@ public class ExpenseManager : MonoBehaviour
         submitButton.interactable = true;
     }
 
+    /// <summary>
+    /// Coroutine to fetch the player's monthly income from the server.
+    /// Stores the result in _fetchedMonthlyIncome.
+    /// </summary>
     private IEnumerator Co_FetchMonthlyIncome()
     {
         _fetchedMonthlyIncome = 0f;
@@ -157,9 +177,12 @@ public class ExpenseManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// New: Coroutine to fetch all spending records from the database and check for a previous day's entry.
+    /// </summary>
     private IEnumerator Co_CheckPreviousDaySpendingFromDB()
     {
-        _hasLoggedPreviousDayFromDB = false;
+        _hasLoggedPreviousDayFromDB = false; // Reset before checking
 
         string apiPath = ServerConfig.LoadFromFile("Config/ServerConfig.json")?.GetApiPath();
         if (string.IsNullOrEmpty(apiPath))
@@ -168,7 +191,7 @@ public class ExpenseManager : MonoBehaviour
             yield break;
         }
 
-        string url = apiPath + "/get_player_spending.php";
+        string url = apiPath + "/get_player_spending.php"; // API endpoint for spending records
         var requestData = new PlayerIdRequest { player_id = playerId };
         string json = JsonUtility.ToJson(requestData);
 
@@ -199,11 +222,12 @@ public class ExpenseManager : MonoBehaviour
                         Debug.Log($"[Co_CheckPreviousDaySpendingFromDB] Checking for records on: {yesterday.ToString("yyyy-MM-dd")}");
                         foreach (var record in response.spending_records)
                         {
+                            // Ensure the record.last_updated can be parsed and its date matches yesterday's date.
                             if (DateTime.TryParse(record.last_updated, out DateTime parsedRecordDate) && parsedRecordDate.Date == yesterday)
                             {
                                 _hasLoggedPreviousDayFromDB = true;
                                 Debug.Log($"[Co_CheckPreviousDaySpendingFromDB] Found spending record for yesterday: {yesterday.ToString("yyyy-MM-dd")} (Record: {record.last_updated})");
-                                break;
+                                break; // Found one, no need to check further
                             }
                         }
                         if (!_hasLoggedPreviousDayFromDB)
@@ -224,6 +248,15 @@ public class ExpenseManager : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Pure function to calculate the number of coins earned based on rules.
+    /// Now uses the boolean result from the database check for previous day's login.
+    /// </summary>
+    /// <param name="dailySpending">The amount spent today.</param>
+    /// <param name="monthlyIncome">The player's monthly income.</param>
+    /// <param name="hasLoggedPreviousDay">True if a spending record exists for the previous day in the DB.</param>
+    /// <returns>Total coins to be earned, capped at 15.</returns>
     private int CalculateCoinsEarned(float dailySpending, float monthlyIncome, bool hasLoggedPreviousDay)
     {
         int coins = 0;
@@ -273,6 +306,9 @@ public class ExpenseManager : MonoBehaviour
         StartCoroutine(Co_SendExpenseDataAndApplyRewards());
     }
 
+    /// <summary>
+    /// Coroutine to send expense data to the server and then apply rewards based on pre-calculated value.
+    /// </summary>
     private IEnumerator Co_SendExpenseDataAndApplyRewards()
     {
         float dailySpending;
@@ -284,13 +320,17 @@ public class ExpenseManager : MonoBehaviour
 
         yield return Co_SendExpenseData(dailySpending);
 
+        // Check if Co_SendExpenseData was successful (by checking if a failure message was set)
         if (statusText.text != "Submission failed!" && !statusText.text.Contains("error"))
         {
+            // The expense was successfully submitted. Now update PlayerPrefs to record this submission.
+            // This is for the client-side CheckForDailySubmission, not the "previous day bonus" anymore.
             PlayerPrefs.SetString(LAST_SUBMISSION_DATE_KEY, DateTime.Now.ToString("yyyy-MM-dd"));
             PlayerPrefs.Save();
             Debug.Log($"PlayerPrefs updated: {LAST_SUBMISSION_DATE_KEY} set to {DateTime.Now.ToString("yyyy-MM-dd")}");
 
-            int coinsToAward = _potentialCoinsEarned;
+            // Proceed to apply rewards
+            int coinsToAward = _potentialCoinsEarned; // Use the pre-calculated value
 
             if (!PlayerDataManager.IsDataLoaded)
             {
@@ -400,9 +440,24 @@ public class ExpenseManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Navigates back using the SceneController's history.
+    /// This should be called if the Expense scene was loaded additively.
+    /// </summary>
     public void GoToPreviousScene()
     {
-        SceneManager.LoadScene("DiaryPage");
+        if (SceneController.Instance != null)
+        {
+            Debug.Log("ExpenseManager: Calling SceneController.Instance.GoBack()");
+            SceneController.Instance.GoBack();
+        }
+        else
+        {
+            Debug.LogError("ExpenseManager: SceneController instance not found! Cannot go back properly. Falling back to direct scene load.");
+            // Fallback for development if SceneController isn't set up as a persistent singleton.
+            // In a production build, SceneController should always be available if used consistently.
+            SceneManager.LoadScene("DiaryPage");
+        }
     }
 
     void OnDestroy()

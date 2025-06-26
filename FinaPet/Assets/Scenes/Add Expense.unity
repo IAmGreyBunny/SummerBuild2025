@@ -2123,14 +2123,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4f75abe7bff63148a5149b759fb20f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  addExpensePage: {fileID: 404568993}
-  statusPanel: {fileID: 1074979383}
   expenseInputField: {fileID: 1200130479}
   submitButton: {fileID: 1894252153}
   confirmationPopup: {fileID: 2031415413}
   confirmSubmitText: {fileID: 586377992}
   yesButton: {fileID: 564565921}
   noButton: {fileID: 1085176770}
+  statusPanel: {fileID: 1074979383}
   statusText: {fileID: 1462418066}
   goBackButton: {fileID: 2103153092}
   playerId: 10
@@ -2496,7 +2495,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.000061035156}
-  m_SizeDelta: {x: -1175.1259, y: -729.5243}
+  m_SizeDelta: {x: -1346.0015, y: -645.16364}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1074979385
 MonoBehaviour:
