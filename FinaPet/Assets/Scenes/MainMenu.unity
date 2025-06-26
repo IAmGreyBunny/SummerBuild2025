@@ -1576,7 +1576,6 @@ MonoBehaviour:
   avatarSprites:
   - {fileID: -8771350949733757393, guid: 2bc1befcc149c734d8476a184527868d, type: 3}
   - {fileID: 431512648808933374, guid: e7a46e36bb7cbec4ca2a2d6007a735e1, type: 3}
-  debugPlayerId: 10
 --- !u!1 &1057918798
 GameObject:
   m_ObjectHideFlags: 0
@@ -2276,6 +2275,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d54694243b88dba438a8254c489c8f4f, type: 2}
   - {fileID: 11400000, guid: a8f598e6349cdfe46b479fa5be8f3e65, type: 2}
   - {fileID: 11400000, guid: 99d91d836e1cc2440b746bddd17dee37, type: 2}
+  - {fileID: 11400000, guid: 535e19eb84db1cb4ba1e35bd930b6a4d, type: 2}
   stopMusicIfNoConfig: 0
 --- !u!1 &1597917012
 GameObject:

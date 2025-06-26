@@ -2141,6 +2141,8 @@ MonoBehaviour:
   sceneMusicConfigs:
   - {fileID: 11400000, guid: 535e19eb84db1cb4ba1e35bd930b6a4d, type: 2}
   - {fileID: 11400000, guid: d54694243b88dba438a8254c489c8f4f, type: 2}
+  - {fileID: 11400000, guid: a8f598e6349cdfe46b479fa5be8f3e65, type: 2}
+  - {fileID: 11400000, guid: 99d91d836e1cc2440b746bddd17dee37, type: 2}
   stopMusicIfNoConfig: 0
 --- !u!4 &1638619957
 Transform:
