@@ -45,7 +45,7 @@ Earn coins by saving money and use them to adopt and care for virtual pets.
 Feed, pet, and bond with your animals—neglect them and they’ll run away!
 
 ### Showing off your pets
-![](https://github.com/IAmGreyBunny/SummerBuild2025/blob/5792f1cfb457972d6f72852845e954e629590880/FinaPet%20Images/pet%20interaction.png)
+![](https://github.com/IAmGreyBunny/SummerBuild2025/blob/501c94c5f4f60fdd7a98d5ea34008de468211664/FinaPet%20Images/Home.png)
 Watch your happy pets roaming around the field
 
 ---
